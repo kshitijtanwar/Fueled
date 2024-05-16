@@ -1,25 +1,32 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User
-from .models import Profile, Guest, Host
+from .models import Profile
 
 class UserSerializer(serializers.ModelSerializer):
+    password = serializers.CharField(write_only=True)
+
     class Meta:
         model = User
-        fields = ('username', 'password', 'email')  # Added 'email' field
-        extra_kwargs = {'password': {'write_only': True}}
-        
+        fields = ('id', 'username', 'email', 'password')
+
+    def validate_email(self, value):
+        if User.objects.filter(email=value).exists():
+            raise serializers.ValidationError("Email already exists")
+        return value
+
+    def create(self, validated_data):
+        user = User.objects.create_user(**validated_data)
+        return user
 
 class ProfileSerializer(serializers.ModelSerializer):
     user = UserSerializer()
-    is_host = serializers.BooleanField()
 
     class Meta:
         model = Profile
-        fields = ('user', 'is_host')
+        fields = ('id', 'user', 'contact_info')
 
     def create(self, validated_data):
         user_data = validated_data.pop('user')
-        is_host = validated_data.pop('is_host')
-        user = User.objects.create_user(**user_data)
-        profile = Profile.objects.create(user=user, is_host=is_host)
+        user = UserSerializer().create(user_data)
+        profile = Profile.objects.create(user=user, **validated_data)
         return profile
