@@ -2,7 +2,6 @@ from django.db import models
 from user.models import Profile, SubEvent
 
 class Channel(models.Model):
-    ChannelID = models.AutoField(primary_key=True)
     ChannelName = models.CharField(max_length=255)
     ChannelType = models.CharField(max_length=20)
     SubEvent = models.ForeignKey(SubEvent, on_delete=models.CASCADE)
@@ -13,7 +12,6 @@ class Channel_Participant(models.Model):
     Role = models.CharField(max_length=20)
 
 class Channel_Message(models.Model):
-    MessageID = models.AutoField(primary_key=True)
     Channel = models.ForeignKey('Channel', on_delete=models.CASCADE)
     SenderProfile = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name='channel_messages')
     Message = models.TextField()
