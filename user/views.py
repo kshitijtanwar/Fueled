@@ -1,15 +1,17 @@
 from rest_framework import viewsets
 from rest_framework.permissions import AllowAny, IsAuthenticated
-from django.contrib.auth import authenticate
+from django.contrib.auth import authenticate, logout
 from rest_framework.response import Response
 from rest_framework import status
-from .models import Profile
-from .serializers import UserSerializer, ProfileSerializer
+from .models import Profile, Event, RSVP
+from .serializers import ProfileSerializer, EventSerializer, RSVPSerializer
 from django.contrib.auth import login
 from rest_framework.authentication import SessionAuthentication
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
 from django.db.utils import IntegrityError
+from rest_framework import permissions
+from rest_framework.exceptions import NotAuthenticated
 
 @method_decorator(csrf_exempt, name='dispatch')
 class ProfileViewSet(viewsets.ModelViewSet):
@@ -57,3 +59,30 @@ class ProfileViewSet(viewsets.ModelViewSet):
         instance = self.request.user.profile
         serializer = self.get_serializer(instance)
         return Response(serializer.data)
+    
+    def logout(self, request):
+        if not request.user.is_authenticated:
+            raise NotAuthenticated("You must be authenticated to access this view.")
+        
+        logout(request)
+        return Response({"status": "Logged out"})
+
+@method_decorator(csrf_exempt, name='dispatch')
+class EventViewSet(viewsets.ModelViewSet):
+    def initial(self, request, *args, **kwargs):
+        request._dont_enforce_csrf_checks = True
+        super(EventViewSet, self).initial(request, *args, **kwargs)
+    
+    queryset = Event.objects.all()
+    serializer_class = EventSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+@method_decorator(csrf_exempt, name='dispatch')
+class RSVPViewSet(viewsets.ModelViewSet):
+    def initial(self, request, *args, **kwargs):
+        request._dont_enforce_csrf_checks = True
+        super(RSVPViewSet, self).initial(request, *args, **kwargs)
+
+    queryset = RSVP.objects.all()
+    serializer_class = RSVPSerializer
+    permission_classes = [permissions.IsAuthenticated]
