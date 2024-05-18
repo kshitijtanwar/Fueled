@@ -14,6 +14,7 @@ export default {
             },
             fontFamily: {
                 caveat: ["Caveat", "cursive"],
+                inter: ["Inter", "sans - serif"],
             },
         },
     },

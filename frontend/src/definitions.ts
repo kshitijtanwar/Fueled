@@ -4,8 +4,16 @@ export interface LoginType {
 }
 
 export interface SignUpType {
-    username: string;
-    email: string;
-    password: string;
-    contact_info: number;
+    user: { username: string; email: string; password: string };
+    contact_info: number | undefined;
+}
+
+export interface UserState {
+    isAuthenticated: boolean;
+    loading: boolean;
+    error: string | null;
+}
+
+export interface ErrorType{
+    error: string ;
 }

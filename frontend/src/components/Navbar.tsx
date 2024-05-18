@@ -1,6 +1,7 @@
 "use client";
 
 import { Navbar as FlowbiteNav } from "flowbite-react";
+import { Link } from "react-router-dom";
 import logo from "../assets/Navbar/logo.png";
 const Navbar = () => {
     return (
@@ -15,11 +16,11 @@ const Navbar = () => {
                     Occasion
                 </span>
             </FlowbiteNav.Brand>
-            <div className="flex gap-2 md:order-2">
+            <Link className="flex gap-2 md:order-2" to={"/login"}>
                 <button className="text-grey-secondary border rounded-md px-4 hover:scale-105 duration-150 text-xs font-normal py-2">
                     Login | Sign up
                 </button>
-            </div>
+            </Link>
         </FlowbiteNav>
     );
 };

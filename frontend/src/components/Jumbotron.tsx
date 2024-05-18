@@ -6,7 +6,8 @@ const Jumbotron = () => {
                     Gather everyone you know
                 </h1>
                 <p className="mb-8 text-lg font-normal text-gray-300 lg:text-xl sm:px-16 lg:px-48">
-                    Here at Ocassion we gather everyone you know for the event's convenience
+                    Here at Ocassion we gather everyone you know for the event's
+                    convenience
                 </p>
                 <div className="flex flex-col space-y-4 sm:flex-row sm:justify-center sm:space-y-0">
                     <a
@@ -23,9 +24,9 @@ const Jumbotron = () => {
                         >
                             <path
                                 stroke="currentColor"
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
-                                stroke-width="2"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth="2"
                                 d="M1 5h12m0 0L9 1m4 4L9 9"
                             />
                         </svg>
