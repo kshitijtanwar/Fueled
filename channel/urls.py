@@ -3,7 +3,7 @@ from rest_framework.routers import DefaultRouter
 from .views import ChannelViewSet, ChannelParticipantViewSet, ChannelMessageViewSet
 
 router = DefaultRouter()
-router.register(r'register', ChannelViewSet)
+router.register(r'', ChannelViewSet)
 router.register(r'participants', ChannelParticipantViewSet)
 router.register(r'messages', ChannelMessageViewSet)
 
