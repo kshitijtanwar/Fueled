@@ -65,6 +65,7 @@ INSTALLED_APPS = [
     'user',
     'channel',
     'rest_framework',
+    'channels',
 ]
 
 MIDDLEWARE = [
@@ -96,6 +97,7 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'config.wsgi.application'
+ASGI_APPLICATION = 'config.routing.application'
 
 
 # Database
