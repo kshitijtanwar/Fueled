@@ -1,10 +1,17 @@
-import HomePage from "./pages/HomePage";
-
+import { Provider } from "react-redux";
+import { store } from "./store";
+import Register from "./components/Register";
+import Login from "./components/Login";
+// import HomePage from "./pages/HomePage";
 function App() {
     return (
-        <div>
-            <HomePage />
-        </div>
+        <Provider store={store}>
+            <div>
+                {/* <HomePage /> */}
+                <Register />
+                <Login />
+            </div>
+        </Provider>
     );
 }
 
