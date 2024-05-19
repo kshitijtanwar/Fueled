@@ -18,8 +18,8 @@ const Login: React.FC = () => {
     };
 
     return (
-        <>
-            <h1 className="w-11/12 mx-auto text-center text-3xl mt-4 mb-8">
+        <main >
+            <h1 className="w-11/12 mx-auto text-center text-3xl mt-4 mb-8 text-white font-inter">
                 Let's log you in
             </h1>
             <form
@@ -28,7 +28,7 @@ const Login: React.FC = () => {
             >
                 <div>
                     <div className="mb-2 block">
-                        <Label htmlFor="email1" value="Your email" />
+                        <Label htmlFor="email1" value="Your email" className="text-white"/>
                     </div>
                     <TextInput
                         type="email"
@@ -41,7 +41,7 @@ const Login: React.FC = () => {
                 </div>
                 <div>
                     <div className="mb-2 block">
-                        <Label htmlFor="password1" value="Your password" />
+                        <Label htmlFor="password1" value="Your password" className="text-white"/>
                     </div>
                     <TextInput
                         id="password1"
@@ -53,14 +53,14 @@ const Login: React.FC = () => {
                 </div>
                 <button
                     type="submit"
-                    className="border bg-indigo-primary text-white py-3 rounded-lg hover:bg-indigo-secondary duration-150"
+                    className="bg-indigo-primary text-white py-3 rounded-lg hover:bg-indigo-secondary duration-150"
                 >
                     Submit
                 </button>
-                <a href="/register" className="mx-auto text-blue-500 hover:underline">Create a new account?</a>
+                <a href="/register" className="mx-auto text-blue-400 hover:underline">Create a new account?</a>
             </form>
             
-        </>
+        </main>
     );
 };
 
