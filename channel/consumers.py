@@ -34,6 +34,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
 
         # Save the message to the database
         sender_profile = await database_sync_to_async(Profile.objects.get)(id=self.sender_profile_id)
+        sender_username = await database_sync_to_async(lambda: sender_profile.user.username)()
         channel = await database_sync_to_async(Channel.objects.get)(ChannelName=self.room_name)
         channel_message = await database_sync_to_async(Channel_Message.objects.create)(
             Channel=channel,
@@ -47,7 +48,8 @@ class ChatConsumer(AsyncWebsocketConsumer):
             {
                 'type': 'chat_message',
                 'message': message,
-                'sender_profile_id': self.sender_profile_id
+                'sender_profile_id': self.sender_profile_id,  
+                'sender_username': sender_username
             }
         )
 
@@ -55,10 +57,11 @@ class ChatConsumer(AsyncWebsocketConsumer):
     async def chat_message(self, event):
         message = event['message']
         sender_profile_id = event['sender_profile_id']
+        sender_username = event['sender_username']
 
         # Check if the sender is the same as the receiver
         if sender_profile_id != self.sender_profile_id:
             await self.send(text_data=json.dumps({
                 'message': message,
-                'sender_profile_id': sender_profile_id
+                'sender_username': sender_username
             }))
