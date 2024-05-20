@@ -10,11 +10,11 @@ const AboutUs = () => {
                         Welcome to Getogether - A Slack for events!
                     </h2>
                     <p className="text-grey-primary mb-4">
-                        At Ocassion, we revolutionize the way events are managed
+                        At Occasion, we revolutionize the way events are managed
                         and experienced. Our platform connects communities,
                         streamlines event planning, and enhances collaboration.
                         Whether you're hosting a virtual conference, a social
-                        gathering, or a corporate seminar, Ocassion empowers you
+                        gathering, or a corporate seminar, Occasion empowers you
                         to create memorable experiences with ease.
                     </p>
                     
