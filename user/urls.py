@@ -1,6 +1,7 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
-from .views import ProfileViewSet, EventViewSet, RSVPViewSet
+from .views import ProfileViewSet, EventViewSet, RSVPViewSet, SubEventChannelsView
+from .views import UserEventsView
 
 router = DefaultRouter()
 router.register(r'register', ProfileViewSet, basename='profile')
@@ -12,4 +13,6 @@ urlpatterns = [
     path('login/', ProfileViewSet.as_view({'post': 'login'}), name='login'),
     path('profile/', ProfileViewSet.as_view({'get': 'retrieve'}), name='profile'),
     path('logout/', ProfileViewSet.as_view({'post': 'logout'}), name='logout'),
+     path('<int:user_id>/events/', UserEventsView.as_view(), name='user-events'),
+     path('subevent/<int:subevent_id>/channels/', SubEventChannelsView.as_view(), name='subevent-channels'),
 ]

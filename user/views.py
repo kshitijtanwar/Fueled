@@ -3,7 +3,7 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from django.contrib.auth import authenticate, logout
 from rest_framework.response import Response
 from rest_framework import status
-from .models import Profile, Event, RSVP
+from .models import Profile, Event, RSVP, SubEvent
 from .serializers import ProfileSerializer, EventSerializer, RSVPSerializer
 from django.contrib.auth import login
 from rest_framework.authentication import SessionAuthentication
@@ -12,6 +12,8 @@ from django.utils.decorators import method_decorator
 from django.db.utils import IntegrityError
 from rest_framework import permissions
 from rest_framework.exceptions import NotAuthenticated
+from rest_framework.views import APIView
+from channel.serializers import ChannelSerializer
 
 @method_decorator(csrf_exempt, name='dispatch')
 class ProfileViewSet(viewsets.ModelViewSet):
@@ -86,3 +88,20 @@ class RSVPViewSet(viewsets.ModelViewSet):
     queryset = RSVP.objects.all()
     serializer_class = RSVPSerializer
     permission_classes = [permissions.IsAuthenticated]
+
+
+class UserEventsView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get(self, request, user_id, format=None):
+        profile = Profile.objects.get(user_id=user_id)
+        events = profile.get_user_events()
+        serializer = EventSerializer(events, many=True)
+        return Response(serializer.data)
+    
+class SubEventChannelsView(APIView):
+    def get(self, request, subevent_id, format=None):
+        subevent = SubEvent.objects.get(id=subevent_id)
+        channels = subevent.get_channels()
+        serializer = ChannelSerializer(channels, many=True)
+        return Response(serializer.data)

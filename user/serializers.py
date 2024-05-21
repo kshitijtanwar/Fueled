@@ -35,14 +35,14 @@ class ProfileSerializer(serializers.ModelSerializer):
 class SubEventSerializer(serializers.ModelSerializer):
     class Meta:
         model = SubEvent
-        fields = ['name', 'start_datetime', 'end_datetime', 'venue_name', 'venue_location', 'venue_capacity', 'capacity']
+        fields = ['id', 'name', 'start_datetime', 'end_datetime', 'venue_name', 'venue_location', 'venue_capacity', 'capacity']
 
 class EventSerializer(serializers.ModelSerializer):
     subevents = SubEventSerializer(many=True)
 
     class Meta:
         model = Event
-        fields = ['name', 'description', 'start_date', 'end_date', 'organizer', 'subevents']
+        fields = ['id', 'name', 'description', 'start_date', 'end_date', 'organizer', 'subevents']
 
     def create(self, validated_data):
         subevents_data = validated_data.pop('subevents')
@@ -54,4 +54,4 @@ class EventSerializer(serializers.ModelSerializer):
 class RSVPSerializer(serializers.ModelSerializer):
     class Meta:
         model = RSVP
-        fields = ['guest', 'event', 'status']
+        fields = ['id', 'guest', 'event', 'status']

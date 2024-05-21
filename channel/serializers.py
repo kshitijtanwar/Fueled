@@ -4,7 +4,7 @@ from .models import Channel, Channel_Participant, Channel_Message
 class ChannelSerializer(serializers.ModelSerializer):
     class Meta:
         model = Channel
-        fields = ['ChannelName', 'ChannelType', 'SubEvent']
+        fields = ['id', 'ChannelName', 'ChannelType', 'SubEvent']
 
 class ChannelParticipantSerializer(serializers.ModelSerializer):
     class Meta:

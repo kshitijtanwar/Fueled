@@ -6,6 +6,9 @@ class Channel(models.Model):
     ChannelType = models.CharField(max_length=20)
     SubEvent = models.ForeignKey(SubEvent, on_delete=models.CASCADE)
 
+    def get_messages(self):
+        return self.channel_message_set.order_by('Timestamp')
+
 class Channel_Participant(models.Model):
     Channel = models.ForeignKey('Channel', on_delete=models.CASCADE)
     ParticipantProfile = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name='channel_participations')
