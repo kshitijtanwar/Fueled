@@ -4,25 +4,32 @@ import Register from "./components/Register";
 import Login from "./components/Login";
 import HomePage from "./pages/HomePage";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
-import Main from "./pages/Main";
+import MainUserPage from "./pages/Root";
+import SideDrawer from "./components/SideDrawer";
 function App() {
     const router = createBrowserRouter([
         {
             path: "/",
             element: <HomePage />,
         },
-        
+
         {
-            path:"/login",
-            element:<Login/>
+            path: "/login",
+            element: <Login />,
         },
         {
-            path:"/register",
-            element:<Register/>
+            path: "/register",
+            element: <Register />,
         },
         {
-            path:"/main",
-            element:<Main/>
+            path: "/main",
+            element: <MainUserPage />,
+            children: [
+                {
+                    index: true,
+                    element: <SideDrawer />,
+                },
+            ],
         },
     ]);
     return (
