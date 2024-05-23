@@ -91,7 +91,7 @@ const Drawer = styled(MuiDrawer, {
 
 const SideDrawer = () => {
     const [open, setOpen] = React.useState(false);
-    const [isEventFormOpen, setEventFormIsOpen] = React.useState(true);
+    const [isEventFormOpen, setEventFormIsOpen] = React.useState(false);
     const handleDrawer = () => {
         setOpen(!open);
     };
