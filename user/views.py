@@ -91,15 +91,27 @@ class RSVPViewSet(viewsets.ModelViewSet):
 
 
 class UserEventsView(APIView):
+    def initial(self, request, *args, **kwargs):
+        request._dont_enforce_csrf_checks = True
+        super(UserEventsView, self).initial(request, *args, **kwargs)
+
     permission_classes = [permissions.IsAuthenticated]
 
-    def get(self, request, user_id, format=None):
+    def get(self, request, format=None):
+        user_id = self.request.user.profile.id
+        print(user_id)
         profile = Profile.objects.get(user_id=user_id)
         events = profile.get_user_events()
         serializer = EventSerializer(events, many=True)
         return Response(serializer.data)
     
 class SubEventChannelsView(APIView):
+    def initial(self, request, *args, **kwargs):
+        request._dont_enforce_csrf_checks = True
+        super(SubEventChannelsView, self).initial(request, *args, **kwargs)
+
+    permission_classes = [permissions.IsAuthenticated]
+
     def get(self, request, subevent_id, format=None):
         subevent = SubEvent.objects.get(id=subevent_id)
         channels = subevent.get_channels()

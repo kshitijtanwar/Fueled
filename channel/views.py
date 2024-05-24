@@ -33,7 +33,12 @@ class ChannelMessageViewSet(viewsets.ModelViewSet):
     queryset = Channel_Message.objects.all()
     serializer_class = ChannelMessageSerializer
 
+@method_decorator(csrf_exempt, name='dispatch')
 class ChannelMessagesView(APIView):
+    def initial(self, request, *args, **kwargs):
+        request._dont_enforce_csrf_checks = True
+        super(ChannelMessagesView, self).initial(request, *args, **kwargs)
+
     def get(self, request, channel_id, format=None):
         channel = Channel.objects.get(id=channel_id)
         messages = channel.get_messages()
