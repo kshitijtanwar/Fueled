@@ -7,7 +7,6 @@ class Profile(models.Model):
 
     def get_user_events(self):
         return self.organized_events.all()
-    
 
 class Event(models.Model):
     name = models.CharField(max_length=255)
@@ -15,6 +14,9 @@ class Event(models.Model):
     start_date = models.DateField()
     end_date = models.DateField()
     organizer = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name='organized_events')
+
+    def get_subevents(self):
+        return self.subevents.all()
 
 class SubEvent(models.Model):
     event = models.ForeignKey(Event, on_delete=models.CASCADE, related_name='subevents')

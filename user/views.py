@@ -4,7 +4,7 @@ from django.contrib.auth import authenticate, logout
 from rest_framework.response import Response
 from rest_framework import status
 from .models import Profile, Event, RSVP, SubEvent
-from .serializers import ProfileSerializer, EventSerializer, RSVPSerializer
+from .serializers import ProfileSerializer, EventSerializer, RSVPSerializer, SubEventSerializer
 from django.contrib.auth import login
 from rest_framework.authentication import SessionAuthentication
 from django.views.decorators.csrf import csrf_exempt
@@ -74,10 +74,19 @@ class EventViewSet(viewsets.ModelViewSet):
     def initial(self, request, *args, **kwargs):
         request._dont_enforce_csrf_checks = True
         super(EventViewSet, self).initial(request, *args, **kwargs)
+
+    def list(self, request, format=None):
+        user_id = self.request.user.profile.id
+        print(user_id)
+        profile = Profile.objects.get(user_id=user_id)
+        events = profile.get_user_events()
+        serializer = EventSerializer(events, many=True)
+        return Response(serializer.data)
     
     queryset = Event.objects.all()
     serializer_class = EventSerializer
     permission_classes = [permissions.IsAuthenticated]
+
 
 @method_decorator(csrf_exempt, name='dispatch')
 class RSVPViewSet(viewsets.ModelViewSet):
@@ -89,22 +98,32 @@ class RSVPViewSet(viewsets.ModelViewSet):
     serializer_class = RSVPSerializer
     permission_classes = [permissions.IsAuthenticated]
 
-
-class UserEventsView(APIView):
+@method_decorator(csrf_exempt, name='dispatch')
+class SubEventViewSet(viewsets.ModelViewSet):
     def initial(self, request, *args, **kwargs):
         request._dont_enforce_csrf_checks = True
-        super(UserEventsView, self).initial(request, *args, **kwargs)
+        super(SubEventViewSet, self).initial(request, *args, **kwargs)
 
-    permission_classes = [permissions.IsAuthenticated]
+    def list(self, request, format=None):
+        event_id = request.data.get('event')
+        if not event_id:
+            return Response({"error": "event_id is required"}, status=400)
 
-    def get(self, request, format=None):
-        user_id = self.request.user.profile.id
-        print(user_id)
-        profile = Profile.objects.get(user_id=user_id)
-        events = profile.get_user_events()
-        serializer = EventSerializer(events, many=True)
+        try:
+            event = Event.objects.get(id=event_id)
+        except Event.DoesNotExist:
+            return Response({"error": "Event does not exist"}, status=404)
+
+        subevents = event.get_subevents()
+        serializer = SubEventSerializer(subevents, many=True)
         return Response(serializer.data)
     
+    queryset = SubEvent.objects.all()
+    serializer_class = SubEventSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    
+@method_decorator(csrf_exempt, name='dispatch')
 class SubEventChannelsView(APIView):
     def initial(self, request, *args, **kwargs):
         request._dont_enforce_csrf_checks = True

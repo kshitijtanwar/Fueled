@@ -35,21 +35,18 @@ class ProfileSerializer(serializers.ModelSerializer):
 class SubEventSerializer(serializers.ModelSerializer):
     class Meta:
         model = SubEvent
-        fields = ['id', 'name', 'start_datetime', 'end_datetime', 'venue_name', 'venue_location', 'venue_capacity', 'capacity']
+        fields = ['event', 'name', 'start_datetime', 'end_datetime', 'venue_name', 'venue_location', 'venue_capacity', 'capacity']
 
 class EventSerializer(serializers.ModelSerializer):
-    subevents = SubEventSerializer(many=True)
 
     class Meta:
         model = Event
-        fields = ['id', 'name', 'description', 'start_date', 'end_date', 'organizer', 'subevents']
+        fields = ['id', 'name', 'description', 'start_date', 'end_date']
 
     def create(self, validated_data):
-        subevents_data = validated_data.pop('subevents')
-        event = Event.objects.create(**validated_data)
-        for subevent_data in subevents_data:
-            SubEvent.objects.create(event=event, **subevent_data)
-        return event
+        user = self.context['request'].user
+        return Event.objects.create(organizer=user.profile, **validated_data)
+
 
 class RSVPSerializer(serializers.ModelSerializer):
     class Meta:
