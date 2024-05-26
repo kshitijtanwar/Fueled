@@ -33,14 +33,16 @@ class ChannelMessageViewSet(viewsets.ModelViewSet):
     queryset = Channel_Message.objects.all()
     serializer_class = ChannelMessageSerializer
 
-@method_decorator(csrf_exempt, name='dispatch')
-class ChannelMessagesView(APIView):
-    def initial(self, request, *args, **kwargs):
-        request._dont_enforce_csrf_checks = True
-        super(ChannelMessagesView, self).initial(request, *args, **kwargs)
+    def list(self, request, format=None):
+        channel_id = request.data.get('Channel')
+        if not channel_id:
+            return Response({"error": "Channel is required"}, status=400)
 
-    def get(self, request, channel_id, format=None):
-        channel = Channel.objects.get(id=channel_id)
+        try:
+            channel = Channel.objects.get(id=channel_id)
+        except Channel.DoesNotExist:
+            return Response({"error": "Channel does not exist"}, status=404)
+
         messages = channel.get_messages()
         serializer = ChannelMessageSerializer(messages, many=True)
         return Response(serializer.data)

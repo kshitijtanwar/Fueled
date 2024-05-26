@@ -75,17 +75,27 @@ class EventViewSet(viewsets.ModelViewSet):
         request._dont_enforce_csrf_checks = True
         super(EventViewSet, self).initial(request, *args, **kwargs)
 
-    def list(self, request, format=None):
-        user_id = self.request.user.profile.id
-        print(user_id)
-        profile = Profile.objects.get(user_id=user_id)
-        events = profile.get_user_events()
-        serializer = EventSerializer(events, many=True)
-        return Response(serializer.data)
-    
     queryset = Event.objects.all()
     serializer_class = EventSerializer
     permission_classes = [permissions.IsAuthenticated]
+
+    def list(self, request, format=None):
+        user_id = self.request.user.profile.id
+        profile = Profile.objects.get(user_id=user_id)
+
+        organized_events = profile.get_user_events()
+
+        participant_events = profile.get_participant_events()
+
+        all_events = list(set(organized_events) | set(participant_events))
+
+        all_events_data = []
+        for event in all_events:
+            event_data = EventSerializer(event).data
+            event_data['is_host'] = event in organized_events
+            all_events_data.append(event_data)
+
+        return Response(all_events_data)
 
 
 @method_decorator(csrf_exempt, name='dispatch')
@@ -121,18 +131,3 @@ class SubEventViewSet(viewsets.ModelViewSet):
     queryset = SubEvent.objects.all()
     serializer_class = SubEventSerializer
     permission_classes = [permissions.IsAuthenticated]
-
-    
-@method_decorator(csrf_exempt, name='dispatch')
-class SubEventChannelsView(APIView):
-    def initial(self, request, *args, **kwargs):
-        request._dont_enforce_csrf_checks = True
-        super(SubEventChannelsView, self).initial(request, *args, **kwargs)
-
-    permission_classes = [permissions.IsAuthenticated]
-
-    def get(self, request, subevent_id, format=None):
-        subevent = SubEvent.objects.get(id=subevent_id)
-        channels = subevent.get_channels()
-        serializer = ChannelSerializer(channels, many=True)
-        return Response(serializer.data)

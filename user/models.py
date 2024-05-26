@@ -7,6 +7,14 @@ class Profile(models.Model):
 
     def get_user_events(self):
         return self.organized_events.all()
+    
+    def get_participant_events(self):
+        channel_participations = self.channel_participations.all()
+        channels = [cp.Channel for cp in channel_participations]
+        subevents = SubEvent.objects.filter(channel__in=channels)
+        events = [subevent.event for subevent in subevents]
+        return events
+        
 
 class Event(models.Model):
     name = models.CharField(max_length=255)
