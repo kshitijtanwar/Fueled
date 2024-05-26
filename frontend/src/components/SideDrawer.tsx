@@ -17,7 +17,7 @@ import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import InboxIcon from "@mui/icons-material/MoveToInbox";
 import MailIcon from "@mui/icons-material/Mail";
-
+import { CiLogout } from "react-icons/ci";
 const drawerWidth = 220;
 
 const openedMixin = (theme: Theme): CSSObject => ({
@@ -92,9 +92,12 @@ const Drawer = styled(MuiDrawer, {
 const SideDrawer = () => {
     const [open, setOpen] = React.useState(false);
     const [isEventFormOpen, setEventFormIsOpen] = React.useState(false);
+
     const handleDrawer = () => {
         setOpen(!open);
     };
+
+    
 
     return (
         <Box sx={{ display: "flex" }}>
@@ -119,7 +122,7 @@ const SideDrawer = () => {
                                     justifyContent: open ? "initial" : "center",
                                     px: 2.5,
                                 }}
-                                onClick={()=>setEventFormIsOpen(true)}
+                                onClick={() => setEventFormIsOpen(true)}
                             >
                                 <ListItemIcon
                                     sx={{
@@ -174,11 +177,32 @@ const SideDrawer = () => {
                         </ListItem>
                     ))}
                 </List>
+                <Divider />
+                <ListItem>
+                    <ListItemButton onClick={()=>{}}>
+                        <ListItemIcon
+                            sx={{
+                                minWidth: 0,
+                                mr: open ? 1 : "auto",
+                                justifyContent: "center",
+                            }}
+                        >
+                            <CiLogout />
+                        </ListItemIcon>
+                        <ListItemText
+                            primary="Logout"
+                            sx={{ opacity: open ? 1 : 0 }}
+                        />
+                    </ListItemButton>
+                </ListItem>
             </Drawer>
             <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
                 <DrawerHeader />
                 <Typography paragraph>
-                    <EventForm setFunction={setEventFormIsOpen} parameter={isEventFormOpen}/>
+                    <EventForm
+                        setFunction={setEventFormIsOpen}
+                        parameter={isEventFormOpen}
+                    />
                 </Typography>
             </Box>
         </Box>
