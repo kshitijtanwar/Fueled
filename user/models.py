@@ -1,5 +1,7 @@
 from django.contrib.auth.models import User
 from django.db import models
+import string
+import secrets
 
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
@@ -9,10 +11,8 @@ class Profile(models.Model):
         return self.organized_events.all()
     
     def get_participant_events(self):
-        channel_participations = self.channel_participations.all()
-        channels = [cp.Channel for cp in channel_participations]
-        subevents = SubEvent.objects.filter(channel__in=channels)
-        events = [subevent.event for subevent in subevents]
+        subevent_participations = self.user.subevent_participant_set.all()
+        events = set([participation.subevent.event for participation in subevent_participations])
         return events
         
 
@@ -35,9 +35,28 @@ class SubEvent(models.Model):
     venue_location = models.CharField(max_length=255)
     venue_capacity = models.IntegerField()
     capacity = models.IntegerField()
+    join_code = models.CharField(max_length=20, unique=True, null=True, blank=True)
+
+    def save(self, *args, **kwargs):
+        if not self.join_code:
+            self.join_code = self.generate_join_code()
+        super().save(*args, **kwargs)
+
+    def generate_join_code(self):
+        characters = string.ascii_letters + string.digits
+
+        join_code = ''.join(secrets.choice(characters) for _ in range(20))
+        return join_code
+
 
     def get_channels(self):
         return self.channel_set.all()
+    
+class SubEvent_Participant(models.Model):
+    subevent = models.ForeignKey(SubEvent, on_delete=models.CASCADE, related_name='participants')
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    joined_at = models.DateTimeField(auto_now_add=True)
+
 
 class RSVP(models.Model):
     guest = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name='rsvps')
