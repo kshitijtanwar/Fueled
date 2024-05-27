@@ -77,7 +77,6 @@ class EventViewSet(viewsets.ModelViewSet):
 
     queryset = Event.objects.all()
     serializer_class = EventSerializer
-    permission_classes = [permissions.IsAuthenticated]
 
     def list(self, request, format=None):
         user_id = self.request.user.profile.id
@@ -106,13 +105,15 @@ class RSVPViewSet(viewsets.ModelViewSet):
 
     queryset = RSVP.objects.all()
     serializer_class = RSVPSerializer
-    permission_classes = [permissions.IsAuthenticated]
 
 @method_decorator(csrf_exempt, name='dispatch')
 class SubEventViewSet(viewsets.ModelViewSet):
     def initial(self, request, *args, **kwargs):
         request._dont_enforce_csrf_checks = True
         super(SubEventViewSet, self).initial(request, *args, **kwargs)
+
+    queryset = SubEvent.objects.all()
+    serializer_class = SubEventSerializer
 
     def list(self, request, format=None):
         event_id = request.data.get('event')
@@ -127,7 +128,4 @@ class SubEventViewSet(viewsets.ModelViewSet):
         subevents = event.get_subevents()
         serializer = SubEventSerializer(subevents, many=True)
         return Response(serializer.data)
-    
-    queryset = SubEvent.objects.all()
-    serializer_class = SubEventSerializer
-    permission_classes = [permissions.IsAuthenticated]
+
