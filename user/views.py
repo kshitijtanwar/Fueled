@@ -3,7 +3,7 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from django.contrib.auth import authenticate, logout
 from rest_framework.response import Response
 from rest_framework import status
-from .models import Profile, Event, RSVP, SubEvent
+from .models import Profile, Event, RSVP, SubEvent, SubEvent_Participant
 from .serializers import ProfileSerializer, EventSerializer, RSVPSerializer, SubEventSerializer
 from django.contrib.auth import login
 from rest_framework.authentication import SessionAuthentication
@@ -13,7 +13,7 @@ from django.db.utils import IntegrityError
 from rest_framework import permissions
 from rest_framework.exceptions import NotAuthenticated
 from rest_framework.views import APIView
-from channel.serializers import ChannelSerializer
+from django.shortcuts import get_object_or_404
 
 @method_decorator(csrf_exempt, name='dispatch')
 class ProfileViewSet(viewsets.ModelViewSet):
@@ -77,7 +77,6 @@ class EventViewSet(viewsets.ModelViewSet):
 
     queryset = Event.objects.all()
     serializer_class = EventSerializer
-    permission_classes = [permissions.IsAuthenticated]
 
     def list(self, request, format=None):
         user_id = self.request.user.profile.id
@@ -106,13 +105,15 @@ class RSVPViewSet(viewsets.ModelViewSet):
 
     queryset = RSVP.objects.all()
     serializer_class = RSVPSerializer
-    permission_classes = [permissions.IsAuthenticated]
 
 @method_decorator(csrf_exempt, name='dispatch')
 class SubEventViewSet(viewsets.ModelViewSet):
     def initial(self, request, *args, **kwargs):
         request._dont_enforce_csrf_checks = True
         super(SubEventViewSet, self).initial(request, *args, **kwargs)
+
+    queryset = SubEvent.objects.all()
+    serializer_class = SubEventSerializer
 
     def list(self, request, format=None):
         event_id = request.data.get('event')
@@ -127,7 +128,19 @@ class SubEventViewSet(viewsets.ModelViewSet):
         subevents = event.get_subevents()
         serializer = SubEventSerializer(subevents, many=True)
         return Response(serializer.data)
-    
-    queryset = SubEvent.objects.all()
-    serializer_class = SubEventSerializer
-    permission_classes = [permissions.IsAuthenticated]
+
+@method_decorator(csrf_exempt, name='dispatch')
+class JoinSubEventView(APIView):
+    def initial(self, request, *args, **kwargs):
+        request._dont_enforce_csrf_checks = True
+        super(JoinSubEventView, self).initial(request, *args, **kwargs)
+
+    def post(self, request, join_code, format=None):
+        subevent = get_object_or_404(SubEvent, join_code=join_code)
+        user = request.user
+
+        if SubEvent_Participant.objects.filter(subevent=subevent, user=user).exists():
+            return Response({"message": "You have already joined this subevent."}, status=status.HTTP_400_BAD_REQUEST)
+
+        SubEvent_Participant.objects.create(subevent=subevent, user=user)
+        return Response({"message": "You have successfully joined the subevent."}, status=status.HTTP_200_OK)
