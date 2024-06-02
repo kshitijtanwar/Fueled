@@ -97,15 +97,30 @@ const SideDrawer = () => {
         setOpen(!open);
     };
 
-    
-
     return (
         <Box sx={{ display: "flex" }}>
             <AppBar position="fixed" open={open}></AppBar>
-            <Drawer variant="permanent" open={open} className="z-10">
+            <Drawer
+                variant="permanent"
+                open={open}
+                className="z-10 "
+                PaperProps={{
+                    sx: {
+                        backgroundColor: "#565B5E",
+                        color: "#BFC1C0",
+                    },
+                }}
+            >
                 <DrawerHeader>
-                    <IconButton onClick={handleDrawer}>
-                        {open ? <ChevronLeftIcon /> : <ChevronRightIcon />}
+                    <IconButton
+                        onClick={handleDrawer}
+                        className="text-grey-primary"
+                    >
+                        {open ? (
+                            <ChevronLeftIcon className="text-grey-primary" />
+                        ) : (
+                            <ChevronRightIcon className="text-grey-primary" />
+                        )}
                     </IconButton>
                 </DrawerHeader>
                 <Divider />
@@ -131,7 +146,7 @@ const SideDrawer = () => {
                                         justifyContent: "center",
                                     }}
                                 >
-                                    <IoIosAddCircleOutline className="text-2xl" />
+                                    <IoIosAddCircleOutline className="text-2xl text-grey-primary" />
                                 </ListItemIcon>
                                 <ListItemText
                                     primary={text}
@@ -164,9 +179,9 @@ const SideDrawer = () => {
                                     }}
                                 >
                                     {index % 2 === 0 ? (
-                                        <InboxIcon />
+                                        <InboxIcon className="text-grey-primary" />
                                     ) : (
-                                        <MailIcon />
+                                        <MailIcon className="text-grey-primary" />
                                     )}
                                 </ListItemIcon>
                                 <ListItemText
@@ -178,23 +193,38 @@ const SideDrawer = () => {
                     ))}
                 </List>
                 <Divider />
-                <ListItem>
-                    <ListItemButton onClick={()=>{}}>
-                        <ListItemIcon
-                            sx={{
-                                minWidth: 0,
-                                mr: open ? 1 : "auto",
-                                justifyContent: "center",
-                            }}
+                <List>
+                    {["Logout"].map((text, _) => (
+                        <ListItem
+                            key={text}
+                            disablePadding
+                            sx={{ display: "block" }}
                         >
-                            <CiLogout />
-                        </ListItemIcon>
-                        <ListItemText
-                            primary="Logout"
-                            sx={{ opacity: open ? 1 : 0 }}
-                        />
-                    </ListItemButton>
-                </ListItem>
+                            <ListItemButton
+                                sx={{
+                                    minHeight: 48,
+                                    justifyContent: open ? "initial" : "center",
+                                    px: 2.5,
+                                }}
+                            >
+                                <ListItemIcon
+                                    sx={{
+                                        minWidth: 0,
+                                        mr: open ? 1 : "auto",
+                                        justifyContent: "center",
+                                    }}
+                                >
+                                   
+                                    <CiLogout className="text-2xl text-grey-primary" />
+                                </ListItemIcon>
+                                <ListItemText
+                                    primary={text}
+                                    sx={{ opacity: open ? 1 : 0 }}
+                                />
+                            </ListItemButton>
+                        </ListItem>
+                    ))}
+                </List>
             </Drawer>
             <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
                 <DrawerHeader />
