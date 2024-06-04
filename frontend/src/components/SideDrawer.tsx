@@ -18,6 +18,12 @@ import axios from "axios";
 import { Avatar } from "flowbite-react";
 import { userprofile } from "../constants/constants";
 import { useState, useEffect } from "react";
+import Subevents from "./SubeventPanel";
+import { logoutUser } from "../store/userSlice";
+import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { AppDispatch } from "../store";
+import toast from "react-hot-toast";
 const drawerWidth = 220;
 
 const openedMixin = (theme: Theme): CSSObject => ({
@@ -91,19 +97,27 @@ const Drawer = styled(MuiDrawer, {
 
 const SideDrawer = () => {
     const [open, setOpen] = useState(false);
+    const navigate = useNavigate();
     const [isEventFormOpen, setEventFormIsOpen] = useState(false);
-
+    const dispatch = useDispatch<AppDispatch>();
     const handleDrawer = () => {
         setOpen(!open);
     };
+    const handleLogout = () => {
+        dispatch(logoutUser(navigate));
+    };
     const [events, setEvents] = useState([]);
     useEffect(() => {
+        toast.loading("Fetching events...", { id: "fetchingEvents" });
         const fetchEvents = async () => {
             try {
                 const response = await axios.get(`${userprofile}/user/event`, {
                     withCredentials: true,
                 });
                 setEvents(response.data);
+                toast.success("Events fetched successfully", {
+                    id: "fetchingEvents",
+                });
             } catch (error) {
                 console.error("Error fetching events", error);
             }
@@ -192,6 +206,7 @@ const SideDrawer = () => {
                                 sx={{ display: "block" }}
                             >
                                 <ListItemButton
+                                    onClick={handleLogout}
                                     sx={{
                                         minHeight: 48,
                                         justifyContent: open
@@ -218,7 +233,7 @@ const SideDrawer = () => {
                         ))}
                     </List>
                 </Drawer>
-                {/* <EventPanel /> */}
+                <Subevents subevents={[]} />
             </div>
             <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
                 <DrawerHeader />

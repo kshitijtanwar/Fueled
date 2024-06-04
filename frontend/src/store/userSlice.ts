@@ -66,6 +66,26 @@ export const loginUser = createAsyncThunk(
         }
     }
 );
+export const logoutUser = createAsyncThunk(
+    "user/logout",
+    async (navigate: any, { rejectWithValue }) => {
+        try {
+            const response = await axios.post(`${userprofile}/user/logout/`, {}, { withCredentials: true });
+            toast.success("Logged out successfully"); // Show toast notification
+            navigate('/'); // Navigate to /
+            return response.data;
+        } catch (error: any) {
+            if (axios.isAxiosError(error) && error.response) {
+                const errorResponse = error.response.data as ErrorType;
+                toast.error(errorResponse.error); // Show error toast
+                return rejectWithValue(errorResponse);
+            } else {
+                toast.error("An unexpected error occurred"); // Show error toast
+                return rejectWithValue({ error: "An unexpected error occurred" });
+            }
+        }
+    }
+);
 
 
 const userSlice = createSlice({
@@ -97,9 +117,23 @@ const userSlice = createSlice({
             .addCase(loginUser.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.error.message || "Failed to login";
+            })
+            .addCase(logoutUser.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
+            .addCase(logoutUser.fulfilled, (state) => {
+                state.loading = false;
+                state.isAuthenticated = false;
+            })
+            .addCase(logoutUser.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.error.message || "Failed to logout";
             });
     },
 });
 
 
 export default userSlice.reducer;
+
+
