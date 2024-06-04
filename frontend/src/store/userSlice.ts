@@ -47,10 +47,13 @@ export const loginUser = createAsyncThunk(
             toast.loading("Logging you in", { id: "logging" });
             const response = await axios.post(
                 `${userprofile}/user/login/`,
-                userData
+                userData,
+                { withCredentials: true }
             );
             toast.success("Logged in", { id: "logging" });
             navigate("/main"); // Navigate after successful login
+            console.log(response);
+            
             return response.data;
         } catch (error: any) {
             if (axios.isAxiosError(error) && error.response) {

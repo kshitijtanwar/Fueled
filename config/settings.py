@@ -40,6 +40,8 @@ CORS_ALLOW_ALL_ORIGINS = True
 
 CORS_ALLOW_CREDENTIALS = True
 
+SESSION_COOKIE_HTTPONLY = False
+
 script_dir = os.path.dirname(os.path.abspath(__file__))
 
 # Get the absolute path of the root directory

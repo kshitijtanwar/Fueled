@@ -1,9 +1,7 @@
-import * as React from "react";
 import { styled, Theme, CSSObject } from "@mui/material/styles";
 import Box from "@mui/material/Box";
 import MuiDrawer from "@mui/material/Drawer";
 import MuiAppBar, { AppBarProps as MuiAppBarProps } from "@mui/material/AppBar";
-import { IoIosAddCircleOutline } from "react-icons/io";
 import List from "@mui/material/List";
 import EventForm from "./EventForm";
 import Typography from "@mui/material/Typography";
@@ -15,9 +13,11 @@ import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
-import InboxIcon from "@mui/icons-material/MoveToInbox";
-import MailIcon from "@mui/icons-material/Mail";
 import { CiLogout } from "react-icons/ci";
+import axios from "axios";
+import { Avatar } from "flowbite-react";
+import { userprofile } from "../constants/constants";
+import { useState, useEffect } from "react";
 const drawerWidth = 220;
 
 const openedMixin = (theme: Theme): CSSObject => ({
@@ -90,142 +90,126 @@ const Drawer = styled(MuiDrawer, {
 }));
 
 const SideDrawer = () => {
-    const [open, setOpen] = React.useState(false);
-    const [isEventFormOpen, setEventFormIsOpen] = React.useState(false);
+    const [open, setOpen] = useState(false);
+    const [isEventFormOpen, setEventFormIsOpen] = useState(false);
 
     const handleDrawer = () => {
         setOpen(!open);
     };
+    const [events, setEvents] = useState([]);
+    useEffect(() => {
+        const fetchEvents = async () => {
+            try {
+                const response = await axios.get(`${userprofile}/user/event`, {
+                    withCredentials: true,
+                });
+                setEvents(response.data);
+            } catch (error) {
+                console.error("Error fetching events", error);
+            }
+        };
+        fetchEvents();
+    }, []);
 
     return (
         <Box sx={{ display: "flex" }}>
             <AppBar position="fixed" open={open}></AppBar>
-            <Drawer
-                variant="permanent"
-                open={open}
-                className="z-10 "
-                PaperProps={{
-                    sx: {
-                        backgroundColor: "#565B5E",
-                        color: "#BFC1C0",
-                    },
-                }}
-            >
-                <DrawerHeader>
-                    <IconButton
-                        onClick={handleDrawer}
-                        className="text-grey-primary"
-                    >
-                        {open ? (
-                            <ChevronLeftIcon className="text-grey-primary" />
-                        ) : (
-                            <ChevronRightIcon className="text-grey-primary" />
-                        )}
-                    </IconButton>
-                </DrawerHeader>
-                <Divider />
-                <List>
-                    {["Add event"].map((text, _) => (
-                        <ListItem
-                            key={text}
-                            disablePadding
-                            sx={{ display: "block" }}
+            <div className="flex">
+                <Drawer
+                    variant="permanent"
+                    open={open}
+                    className="z-10 "
+                    PaperProps={{
+                        sx: {
+                            backgroundColor: "#565B5E",
+                            color: "#BFC1C0",
+                        },
+                    }}
+                >
+                    <DrawerHeader>
+                        <IconButton
+                            onClick={handleDrawer}
+                            className="text-violet-200"
                         >
-                            <ListItemButton
-                                sx={{
-                                    minHeight: 48,
-                                    justifyContent: open ? "initial" : "center",
-                                    px: 2.5,
-                                }}
-                                onClick={() => setEventFormIsOpen(true)}
+                            {open ? (
+                                <ChevronLeftIcon className="text-violet-200" />
+                            ) : (
+                                <ChevronRightIcon className="text-violet-200" />
+                            )}
+                        </IconButton>
+                    </DrawerHeader>
+                    <Divider />
+                    <List>
+                        {events?.map((event: any) => (
+                            <ListItem
+                                key={event.id}
+                                disablePadding
+                                sx={{ display: "block" }}
                             >
-                                <ListItemIcon
+                                <ListItemButton
                                     sx={{
-                                        minWidth: 0,
-                                        mr: open ? 1 : "auto",
-                                        justifyContent: "center",
+                                        minHeight: 48,
+                                        justifyContent: open
+                                            ? "initial"
+                                            : "center",
+                                        px: 2.5,
                                     }}
                                 >
-                                    <IoIosAddCircleOutline className="text-2xl text-grey-primary" />
-                                </ListItemIcon>
-                                <ListItemText
-                                    primary={text}
-                                    sx={{ opacity: open ? 1 : 0 }}
-                                />
-                            </ListItemButton>
-                        </ListItem>
-                    ))}
-                </List>
-                <Divider />
-                <List>
-                    {["Event-1", "Event-2", "Event-3"].map((text, index) => (
-                        <ListItem
-                            key={text}
-                            disablePadding
-                            sx={{ display: "block" }}
-                        >
-                            <ListItemButton
-                                sx={{
-                                    minHeight: 48,
-                                    justifyContent: open ? "initial" : "center",
-                                    px: 2.5,
-                                }}
+                                    <ListItemIcon
+                                        sx={{
+                                            minWidth: 0,
+                                            mr: open ? 1 : "auto",
+                                            justifyContent: "center",
+                                        }}
+                                    >
+                                        <Avatar  />
+                                    </ListItemIcon>
+                                    <ListItemText
+                                        primary={event?.name}
+                                        sx={{ opacity: open ? 1 : 0 }}
+                                        className="text-violet-200"
+                                    />
+                                </ListItemButton>
+                            </ListItem>
+                        ))}
+                    </List>
+                    <Divider />
+                    <List>
+                        {["Logout"].map((text, _) => (
+                            <ListItem
+                                key={text}
+                                disablePadding
+                                sx={{ display: "block" }}
                             >
-                                <ListItemIcon
+                                <ListItemButton
                                     sx={{
-                                        minWidth: 0,
-                                        mr: open ? 1 : "auto",
-                                        justifyContent: "center",
+                                        minHeight: 48,
+                                        justifyContent: open
+                                            ? "initial"
+                                            : "center",
+                                        px: 2.5,
                                     }}
                                 >
-                                    {index % 2 === 0 ? (
-                                        <InboxIcon className="text-grey-primary" />
-                                    ) : (
-                                        <MailIcon className="text-grey-primary" />
-                                    )}
-                                </ListItemIcon>
-                                <ListItemText
-                                    primary={text}
-                                    sx={{ opacity: open ? 1 : 0 }}
-                                />
-                            </ListItemButton>
-                        </ListItem>
-                    ))}
-                </List>
-                <Divider />
-                <List>
-                    {["Logout"].map((text, _) => (
-                        <ListItem
-                            key={text}
-                            disablePadding
-                            sx={{ display: "block" }}
-                        >
-                            <ListItemButton
-                                sx={{
-                                    minHeight: 48,
-                                    justifyContent: open ? "initial" : "center",
-                                    px: 2.5,
-                                }}
-                            >
-                                <ListItemIcon
-                                    sx={{
-                                        minWidth: 0,
-                                        mr: open ? 1 : "auto",
-                                        justifyContent: "center",
-                                    }}
-                                >
-                                   
-                                    <CiLogout className="text-2xl text-grey-primary" />
-                                </ListItemIcon>
-                                <ListItemText
-                                    primary={text}
-                                    sx={{ opacity: open ? 1 : 0 }}
-                                />
-                            </ListItemButton>
-                        </ListItem>
-                    ))}
-                </List>
-            </Drawer>
+                                    <ListItemIcon
+                                        sx={{
+                                            minWidth: 0,
+                                            mr: open ? 1 : "auto",
+                                            justifyContent: "center",
+                                        }}
+                                    >
+                                        <CiLogout className="text-2xl text-violet-200 font-extrabold" />
+                                    </ListItemIcon>
+                                    <ListItemText
+                                        primary={text}
+                                        sx={{ opacity: open ? 1 : 0 }}
+                                    />
+                                </ListItemButton>
+                            </ListItem>
+                        ))}
+                    </List>
+                </Drawer>
+                {/* <EventPanel /> */}
+            </div>
             <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
                 <DrawerHeader />
                 <Typography paragraph>
