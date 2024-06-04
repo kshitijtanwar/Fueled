@@ -6,6 +6,7 @@ import HomePage from "./pages/HomePage";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import MainUserPage from "./pages/Root";
 import SideDrawer from "./components/SideDrawer";
+
 function App() {
     const router = createBrowserRouter([
         {
@@ -29,6 +30,7 @@ function App() {
                     index: true,
                     element: <SideDrawer />,
                 },
+                
             ],
         },
     ]);

@@ -1,9 +1,7 @@
-import * as React from "react";
 import { styled, Theme, CSSObject } from "@mui/material/styles";
 import Box from "@mui/material/Box";
 import MuiDrawer from "@mui/material/Drawer";
 import MuiAppBar, { AppBarProps as MuiAppBarProps } from "@mui/material/AppBar";
-import { IoIosAddCircleOutline } from "react-icons/io";
 import List from "@mui/material/List";
 import EventForm from "./EventForm";
 import Typography from "@mui/material/Typography";
@@ -15,9 +13,17 @@ import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
-import InboxIcon from "@mui/icons-material/MoveToInbox";
-import MailIcon from "@mui/icons-material/Mail";
-
+import { CiLogout } from "react-icons/ci";
+import axios from "axios";
+import { Avatar } from "flowbite-react";
+import { userprofile } from "../constants/constants";
+import { useState, useEffect } from "react";
+import Subevents from "./SubeventPanel";
+import { logoutUser } from "../store/userSlice";
+import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { AppDispatch } from "../store";
+import toast from "react-hot-toast";
 const drawerWidth = 220;
 
 const openedMixin = (theme: Theme): CSSObject => ({
@@ -90,95 +96,152 @@ const Drawer = styled(MuiDrawer, {
 }));
 
 const SideDrawer = () => {
-    const [open, setOpen] = React.useState(false);
-    const [isEventFormOpen, setEventFormIsOpen] = React.useState(false);
+    const [open, setOpen] = useState(false);
+    const navigate = useNavigate();
+    const [isEventFormOpen, setEventFormIsOpen] = useState(false);
+    const dispatch = useDispatch<AppDispatch>();
     const handleDrawer = () => {
         setOpen(!open);
     };
+    const handleLogout = () => {
+        dispatch(logoutUser(navigate));
+    };
+    const [events, setEvents] = useState([]);
+    useEffect(() => {
+        toast.loading("Fetching events...", { id: "fetchingEvents" });
+        const fetchEvents = async () => {
+            try {
+                const response = await axios.get(`${userprofile}/user/event`, {
+                    withCredentials: true,
+                });
+                setEvents(response.data);
+                toast.success("Events fetched successfully", {
+                    id: "fetchingEvents",
+                });
+            } catch (error) {
+                console.error("Error fetching events", error);
+            }
+        };
+        fetchEvents();
+    }, []);
 
     return (
         <Box sx={{ display: "flex" }}>
             <AppBar position="fixed" open={open}></AppBar>
-            <Drawer variant="permanent" open={open} className="z-10">
-                <DrawerHeader>
-                    <IconButton onClick={handleDrawer}>
-                        {open ? <ChevronLeftIcon /> : <ChevronRightIcon />}
-                    </IconButton>
-                </DrawerHeader>
-                <Divider />
-                <List>
-                    {["Add event"].map((text, _) => (
-                        <ListItem
-                            key={text}
-                            disablePadding
-                            sx={{ display: "block" }}
+            <div className="flex">
+                <Drawer
+                    variant="permanent"
+                    open={open}
+                    className="z-10 "
+                    PaperProps={{
+                        sx: {
+                            backgroundColor: "#565B5E",
+                            color: "#BFC1C0",
+                        },
+                    }}
+                >
+                    <DrawerHeader>
+                        {open && (
+                            <h1 className="text-2xl font-inter text-white ">
+                                GetTogether
+                            </h1>
+                        )}
+                        <IconButton
+                            onClick={handleDrawer}
+                            className="text-violet-200"
                         >
-                            <ListItemButton
-                                sx={{
-                                    minHeight: 48,
-                                    justifyContent: open ? "initial" : "center",
-                                    px: 2.5,
-                                }}
-                                onClick={()=>setEventFormIsOpen(true)}
+                            {open ? (
+                                <ChevronLeftIcon className="text-violet-200" />
+                            ) : (
+                                <ChevronRightIcon className="text-violet-200" />
+                            )}
+                        </IconButton>
+                    </DrawerHeader>
+                    <Divider />
+                    <List>
+                        {open && (
+                            <h1 className="text-2xl px-5 py-2 font-inter">
+                                Events
+                            </h1>
+                        )}
+                        {events?.map((event: any) => (
+                            <ListItem
+                                key={event.id}
+                                disablePadding
+                                sx={{ display: "block" }}
                             >
-                                <ListItemIcon
+                                <ListItemButton
                                     sx={{
-                                        minWidth: 0,
-                                        mr: open ? 1 : "auto",
-                                        justifyContent: "center",
+                                        minHeight: 48,
+                                        justifyContent: open
+                                            ? "initial"
+                                            : "center",
+                                        px: 2.5,
                                     }}
                                 >
-                                    <IoIosAddCircleOutline className="text-2xl" />
-                                </ListItemIcon>
-                                <ListItemText
-                                    primary={text}
-                                    sx={{ opacity: open ? 1 : 0 }}
-                                />
-                            </ListItemButton>
-                        </ListItem>
-                    ))}
-                </List>
-                <Divider />
-                <List>
-                    {["Event-1", "Event-2", "Event-3"].map((text, index) => (
-                        <ListItem
-                            key={text}
-                            disablePadding
-                            sx={{ display: "block" }}
-                        >
-                            <ListItemButton
-                                sx={{
-                                    minHeight: 48,
-                                    justifyContent: open ? "initial" : "center",
-                                    px: 2.5,
-                                }}
+                                    <ListItemIcon
+                                        sx={{
+                                            minWidth: 0,
+                                            mr: open ? 1 : "auto",
+                                            justifyContent: "center",
+                                        }}
+                                    >
+                                        <Avatar />
+                                    </ListItemIcon>
+                                    <ListItemText
+                                        primary={event?.name}
+                                        sx={{ opacity: open ? 1 : 0 }}
+                                        className="text-violet-200"
+                                    />
+                                </ListItemButton>
+                            </ListItem>
+                        ))}
+                    </List>
+                    <Divider />
+                    <List>
+                        {["Logout"].map((text, _) => (
+                            <ListItem
+                                key={text}
+                                disablePadding
+                                sx={{ display: "block" }}
                             >
-                                <ListItemIcon
+                                <ListItemButton
+                                    onClick={handleLogout}
                                     sx={{
-                                        minWidth: 0,
-                                        mr: open ? 1 : "auto",
-                                        justifyContent: "center",
+                                        minHeight: 48,
+                                        justifyContent: open
+                                            ? "initial"
+                                            : "center",
+                                        px: 2.5,
                                     }}
                                 >
-                                    {index % 2 === 0 ? (
-                                        <InboxIcon />
-                                    ) : (
-                                        <MailIcon />
-                                    )}
-                                </ListItemIcon>
-                                <ListItemText
-                                    primary={text}
-                                    sx={{ opacity: open ? 1 : 0 }}
-                                />
-                            </ListItemButton>
-                        </ListItem>
-                    ))}
-                </List>
-            </Drawer>
+                                    <ListItemIcon
+                                        sx={{
+                                            minWidth: 0,
+                                            mr: open ? 1 : "auto",
+                                            justifyContent: "center",
+                                        }}
+                                    >
+                                        <CiLogout className="text-2xl text-violet-200 font-extrabold" />
+                                    </ListItemIcon>
+                                    <ListItemText
+                                        primary={text}
+                                        sx={{ opacity: open ? 1 : 0 }}
+                                    />
+                                </ListItemButton>
+                            </ListItem>
+                        ))}
+                    </List>
+                </Drawer>
+                <Subevents subevents={[]} />
+            </div>
             <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
                 <DrawerHeader />
                 <Typography paragraph>
-                    <EventForm setFunction={setEventFormIsOpen} parameter={isEventFormOpen}/>
+                    <EventForm
+                        setFunction={setEventFormIsOpen}
+                        parameter={isEventFormOpen}
+                    />
                 </Typography>
             </Box>
         </Box>

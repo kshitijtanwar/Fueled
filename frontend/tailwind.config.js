@@ -13,7 +13,6 @@ export default {
                 "indigo-tertiary": "#181B40",
             },
             fontFamily: {
-                caveat: ["Caveat", "cursive"],
                 inter: ["Inter", "sans - serif"],
             },
         },

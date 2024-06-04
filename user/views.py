@@ -71,6 +71,8 @@ class ProfileViewSet(viewsets.ModelViewSet):
 
 @method_decorator(csrf_exempt, name='dispatch')
 class EventViewSet(viewsets.ModelViewSet):
+    authentication_classes = [SessionAuthentication]
+    permission_classes = [IsAuthenticated,]
     def initial(self, request, *args, **kwargs):
         request._dont_enforce_csrf_checks = True
         super(EventViewSet, self).initial(request, *args, **kwargs)
