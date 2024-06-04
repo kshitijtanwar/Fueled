@@ -142,8 +142,8 @@ const SideDrawer = () => {
                 >
                     <DrawerHeader>
                         {open && (
-                            <h1 className="text-2xl font-caveat text-white ">
-                                Get Together
+                            <h1 className="text-2xl font-inter text-white ">
+                                GetTogether
                             </h1>
                         )}
                         <IconButton
@@ -160,7 +160,7 @@ const SideDrawer = () => {
                     <Divider />
                     <List>
                         {open && (
-                            <h1 className="text-2xl text-center font-inter">
+                            <h1 className="text-2xl px-5 py-2 font-inter">
                                 Events
                             </h1>
                         )}
