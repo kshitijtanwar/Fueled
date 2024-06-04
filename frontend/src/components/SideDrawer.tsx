@@ -127,6 +127,11 @@ const SideDrawer = () => {
                     }}
                 >
                     <DrawerHeader>
+                        {open && (
+                            <h1 className="text-2xl font-caveat text-white ">
+                                Get Together
+                            </h1>
+                        )}
                         <IconButton
                             onClick={handleDrawer}
                             className="text-violet-200"
@@ -140,6 +145,11 @@ const SideDrawer = () => {
                     </DrawerHeader>
                     <Divider />
                     <List>
+                        {open && (
+                            <h1 className="text-2xl text-center font-inter">
+                                Events
+                            </h1>
+                        )}
                         {events?.map((event: any) => (
                             <ListItem
                                 key={event.id}
@@ -162,7 +172,7 @@ const SideDrawer = () => {
                                             justifyContent: "center",
                                         }}
                                     >
-                                        <Avatar  />
+                                        <Avatar />
                                     </ListItemIcon>
                                     <ListItemText
                                         primary={event?.name}
