@@ -24,6 +24,7 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "../store";
 import toast from "react-hot-toast";
+import { IoIosAddCircleOutline } from "react-icons/io";
 const drawerWidth = 220;
 
 const openedMixin = (theme: Theme): CSSObject => ({
@@ -96,6 +97,7 @@ const Drawer = styled(MuiDrawer, {
 }));
 
 const SideDrawer = () => {
+    const [eventFormSubmitted, setEventFormSubmitted] = useState(false);
     const [open, setOpen] = useState(false);
     const navigate = useNavigate();
     const [isEventFormOpen, setEventFormIsOpen] = useState(false);
@@ -123,7 +125,7 @@ const SideDrawer = () => {
             }
         };
         fetchEvents();
-    }, []);
+    }, [eventFormSubmitted]);
 
     return (
         <Box sx={{ display: "flex" }}>
@@ -157,6 +159,41 @@ const SideDrawer = () => {
                             )}
                         </IconButton>
                     </DrawerHeader>
+                    <Divider />
+                    <List>
+                        {["Add event"].map((text, _) => (
+                            <ListItem
+                                key={text}
+                                disablePadding
+                                sx={{ display: "block" }}
+                            >
+                                <ListItemButton
+                                    sx={{
+                                        minHeight: 38,
+                                        justifyContent: open
+                                            ? "initial"
+                                            : "center",
+                                        px: 2.5,
+                                    }}
+                                    onClick={() => setEventFormIsOpen(true)}
+                                >
+                                    <ListItemIcon
+                                        sx={{
+                                            minWidth: 0,
+                                            mr: open ? 1 : "auto",
+                                            justifyContent: "center",
+                                        }}
+                                    >
+                                        <IoIosAddCircleOutline className="text-2xl text-violet-300" />
+                                    </ListItemIcon>
+                                    <ListItemText
+                                        primary={text}
+                                        sx={{ opacity: open ? 1 : 0 }}
+                                    />
+                                </ListItemButton>
+                            </ListItem>
+                        ))}
+                    </List>
                     <Divider />
                     <List>
                         {open && (
@@ -241,6 +278,7 @@ const SideDrawer = () => {
                     <EventForm
                         setFunction={setEventFormIsOpen}
                         parameter={isEventFormOpen}
+                        setEventFormSubmitted={setEventFormSubmitted}
                     />
                 </Typography>
             </Box>

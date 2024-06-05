@@ -3,17 +3,22 @@ import { Button, Drawer, Label } from "flowbite-react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { HiCalendar } from "react-icons/hi";
+import { userprofile } from "../constants/constants";
 
 interface EventFormFunction {
     parameter: boolean;
     setFunction: React.Dispatch<React.SetStateAction<boolean>>;
+    setEventFormSubmitted: React.Dispatch<React.SetStateAction<boolean>>;
+
 }
 
-const EventForm = ({ parameter, setFunction }: EventFormFunction) => {
+const EventForm = ({ parameter, setFunction, setEventFormSubmitted }: EventFormFunction) => {
     const [name, setName] = useState("");
     const [description, setDescription] = useState("");
     const [startDate, setStartDate] = useState<Date | null>(null);
     const [endDate, setEndDate] = useState<Date | null>(null);
+    
+
 
     const handleClose = () => setFunction(false);
 
@@ -30,7 +35,7 @@ const EventForm = ({ parameter, setFunction }: EventFormFunction) => {
         };
 
         try {
-            const response = await fetch("http://localhost:8000/user/event/", {
+            const response = await fetch(`${userprofile}/user/event/`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -43,6 +48,7 @@ const EventForm = ({ parameter, setFunction }: EventFormFunction) => {
                 // Handle success
                 console.log("Event created successfully");
                 handleClose();
+                setEventFormSubmitted(prevState => !prevState); // Toggle the state variable
             } else {
                 // Handle error
                 const errorData = await response.json();
