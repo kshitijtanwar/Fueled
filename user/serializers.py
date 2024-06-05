@@ -35,13 +35,13 @@ class ProfileSerializer(serializers.ModelSerializer):
 class SubEventSerializer(serializers.ModelSerializer):
     class Meta:
         model = SubEvent
-        fields = ['event', 'name', 'start_datetime', 'end_datetime', 'venue_name', 'venue_location', 'venue_capacity', 'capacity', 'join_code']
+        fields = ['event', 'name', 'start_datetime', 'end_datetime', 'venue_name', 'venue_location', 'venue_capacity', 'capacity']
 
 class EventSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Event
-        fields = ['id', 'name', 'description', 'start_date', 'end_date']
+        fields = ['id', 'name', 'description', 'start_date', 'end_date', 'join_code']
 
     def create(self, validated_data):
         user = self.context['request'].user

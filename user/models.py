@@ -11,10 +11,9 @@ class Profile(models.Model):
         return self.organized_events.all()
     
     def get_participant_events(self):
-        subevent_participations = self.user.subevent_participant_set.all()
-        events = set([participation.subevent.event for participation in subevent_participations])
+        event_participations = self.user.event_participant_set.all()
+        events = set([participation.event for participation in event_participations])
         return events
-        
 
 class Event(models.Model):
     name = models.CharField(max_length=255)
@@ -22,9 +21,20 @@ class Event(models.Model):
     start_date = models.DateField()
     end_date = models.DateField()
     organizer = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name='organized_events')
+    join_code = models.CharField(max_length=20, unique=True, null=True, blank=True)
 
     def get_subevents(self):
         return self.subevents.all()
+
+    def save(self, *args, **kwargs):
+        if not self.join_code:
+            self.join_code = self.generate_join_code()
+        super().save(*args, **kwargs)
+
+    def generate_join_code(self):
+        characters = string.ascii_letters + string.digits
+        join_code = ''.join(secrets.choice(characters) for _ in range(20))
+        return join_code
 
 class SubEvent(models.Model):
     event = models.ForeignKey(Event, on_delete=models.CASCADE, related_name='subevents')
@@ -35,25 +45,17 @@ class SubEvent(models.Model):
     venue_location = models.CharField(max_length=255)
     venue_capacity = models.IntegerField()
     capacity = models.IntegerField()
-    join_code = models.CharField(max_length=20, unique=True, null=True, blank=True)
 
     def save(self, *args, **kwargs):
         if not self.join_code:
             self.join_code = self.generate_join_code()
         super().save(*args, **kwargs)
 
-    def generate_join_code(self):
-        characters = string.ascii_letters + string.digits
-
-        join_code = ''.join(secrets.choice(characters) for _ in range(20))
-        return join_code
-
-
     def get_channels(self):
         return self.channel_set.all()
     
-class SubEvent_Participant(models.Model):
-    subevent = models.ForeignKey(SubEvent, on_delete=models.CASCADE, related_name='participants')
+class Event_Participant(models.Model):
+    event = models.ForeignKey(Event, on_delete=models.CASCADE, related_name='participants')
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     joined_at = models.DateTimeField(auto_now_add=True)
 
