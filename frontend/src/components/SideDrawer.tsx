@@ -4,7 +4,6 @@ import MuiDrawer from "@mui/material/Drawer";
 import MuiAppBar, { AppBarProps as MuiAppBarProps } from "@mui/material/AppBar";
 import List from "@mui/material/List";
 import EventForm from "./EventForm";
-import Typography from "@mui/material/Typography";
 import Divider from "@mui/material/Divider";
 import IconButton from "@mui/material/IconButton";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
@@ -17,7 +16,7 @@ import { CiLogout } from "react-icons/ci";
 import axios from "axios";
 import { Avatar } from "flowbite-react";
 import { userprofile } from "../constants/constants";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import Subevents from "./SubeventPanel";
 import { logoutUser } from "../store/userSlice";
 import { useNavigate } from "react-router-dom";
@@ -25,6 +24,7 @@ import { useDispatch } from "react-redux";
 import { AppDispatch } from "../store";
 import toast from "react-hot-toast";
 import { IoIosAddCircleOutline } from "react-icons/io";
+import { UtilityContext } from "../UtilityContext";
 const drawerWidth = 220;
 
 const openedMixin = (theme: Theme): CSSObject => ({
@@ -97,10 +97,13 @@ const Drawer = styled(MuiDrawer, {
 }));
 
 const SideDrawer = () => {
+    const { setRender } = useContext(UtilityContext);
     const [eventFormSubmitted, setEventFormSubmitted] = useState(false);
     const [open, setOpen] = useState(false);
     const navigate = useNavigate();
     const [isEventFormOpen, setEventFormIsOpen] = useState(false);
+    const [events, setEvents] = useState([]);
+    const [eventID, setEventID] = useState("");
     const dispatch = useDispatch<AppDispatch>();
     const handleDrawer = () => {
         setOpen(!open);
@@ -108,7 +111,6 @@ const SideDrawer = () => {
     const handleLogout = () => {
         dispatch(logoutUser(navigate));
     };
-    const [events, setEvents] = useState([]);
     useEffect(() => {
         toast.loading("Fetching events...", { id: "fetchingEvents" });
         const fetchEvents = async () => {
@@ -116,6 +118,7 @@ const SideDrawer = () => {
                 const response = await axios.get(`${userprofile}/user/event`, {
                     withCredentials: true,
                 });
+
                 setEvents(response.data);
                 toast.success("Events fetched successfully", {
                     id: "fetchingEvents",
@@ -126,6 +129,8 @@ const SideDrawer = () => {
         };
         fetchEvents();
     }, [eventFormSubmitted]);
+
+    console.log(eventID);
 
     return (
         <Box sx={{ display: "flex" }}>
@@ -208,6 +213,10 @@ const SideDrawer = () => {
                                 sx={{ display: "block" }}
                             >
                                 <ListItemButton
+                                    onClick={() => {
+                                        setEventID(event.id);
+                                        setRender((prev) => !prev);
+                                    }}
                                     sx={{
                                         minHeight: 48,
                                         justifyContent: open
@@ -270,18 +279,15 @@ const SideDrawer = () => {
                         ))}
                     </List>
                 </Drawer>
-                <Subevents subevents={[]} />
             </div>
-            <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
-                <DrawerHeader />
-                <Typography paragraph>
-                    <EventForm
-                        setFunction={setEventFormIsOpen}
-                        parameter={isEventFormOpen}
-                        setEventFormSubmitted={setEventFormSubmitted}
-                    />
-                </Typography>
-            </Box>
+
+            <EventForm
+                setFunction={setEventFormIsOpen}
+                parameter={isEventFormOpen}
+                setEventFormSubmitted={setEventFormSubmitted}
+            />
+
+            <Subevents eventID={eventID || ""} />
         </Box>
     );
 };
