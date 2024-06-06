@@ -118,7 +118,7 @@ class SubEventViewSet(viewsets.ModelViewSet):
     serializer_class = SubEventSerializer
 
     def list(self, request, format=None):
-        event_id = request.data.get('event')
+        event_id = request.query_params.get('eventID')
         if not event_id:
             return Response({"error": "event_id is required"}, status=400)
 

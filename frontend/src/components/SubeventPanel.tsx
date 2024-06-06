@@ -3,7 +3,7 @@ import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 
 import SubEventBtn from "./SubEventBtn";
 import { userprofile } from "../constants/constants";
-import { useContext, useEffect,  useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import axios from "axios";
 import { UtilityContext } from "../UtilityContext";
 interface SubeventsProps {
@@ -19,8 +19,11 @@ const Subevents = ({ eventID }: SubeventsProps) => {
                     id: "fetchingSubEvents",
                 });
                 const response = await axios.get(
-                    `${userprofile}/user/subevents/${eventID}`,
+                    `${userprofile}/user/subevents/`,
                     {
+                        params: {
+                            eventID: eventID
+                        },
                         withCredentials: true,
                     }
                 );
@@ -48,12 +51,12 @@ const Subevents = ({ eventID }: SubeventsProps) => {
                 Sub events
             </h2>
             <div>
-                {/* {Array.isArray(subevents) && subevents?.map((subevent: { name: string }) => (
+                 {Array.isArray(subevents) && subevents?.map((subevent: { name: string }) => (
                     <SubEventBtn
                         text={subevent.name}
                     />
-                ))} */}
-                {subevents.name ? (
+                ))} 
+                 {subevents.name ? (
                     <div className="flex px-3">
                         <div className="flex gap-2 overflow-scroll my-2 p-3 w-full outline-white">
                             <SubEventBtn
@@ -78,7 +81,7 @@ const Subevents = ({ eventID }: SubeventsProps) => {
                             />
                         </div>
                         <div className="my-auto text-violet-500">
-                             <ChevronRightIcon />
+                            <ChevronRightIcon />
                         </div>
                     </div>
                 ) : (

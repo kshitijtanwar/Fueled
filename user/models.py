@@ -46,11 +46,6 @@ class SubEvent(models.Model):
     venue_capacity = models.IntegerField()
     capacity = models.IntegerField()
 
-    def save(self, *args, **kwargs):
-        if not self.join_code:
-            self.join_code = self.generate_join_code()
-        super().save(*args, **kwargs)
-
     def get_channels(self):
         return self.channel_set.all()
     
