@@ -3,7 +3,7 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from django.contrib.auth import authenticate, logout
 from rest_framework.response import Response
 from rest_framework import status
-from .models import Profile, Event, RSVP, SubEvent, SubEvent_Participant
+from .models import Profile, Event, RSVP, SubEvent, Event_Participant
 from .serializers import ProfileSerializer, EventSerializer, RSVPSerializer, SubEventSerializer
 from django.contrib.auth import login
 from rest_framework.authentication import SessionAuthentication
@@ -118,7 +118,7 @@ class SubEventViewSet(viewsets.ModelViewSet):
     serializer_class = SubEventSerializer
 
     def list(self, request, format=None):
-        event_id = request.data.get('event')
+        event_id = request.query_params.get('eventID')
         if not event_id:
             return Response({"error": "event_id is required"}, status=400)
 
@@ -132,17 +132,17 @@ class SubEventViewSet(viewsets.ModelViewSet):
         return Response(serializer.data)
 
 @method_decorator(csrf_exempt, name='dispatch')
-class JoinSubEventView(APIView):
+class JoinEventView(APIView):
     def initial(self, request, *args, **kwargs):
         request._dont_enforce_csrf_checks = True
-        super(JoinSubEventView, self).initial(request, *args, **kwargs)
+        super(JoinEventView, self).initial(request, *args, **kwargs)
 
     def post(self, request, join_code, format=None):
-        subevent = get_object_or_404(SubEvent, join_code=join_code)
+        event = get_object_or_404(Event, join_code=join_code)
         user = request.user
 
-        if SubEvent_Participant.objects.filter(subevent=subevent, user=user).exists():
-            return Response({"message": "You have already joined this subevent."}, status=status.HTTP_400_BAD_REQUEST)
+        if Event_Participant.objects.filter(event=event, user=user).exists():
+            return Response({"message": "You have already joined this event."}, status=status.HTTP_400_BAD_REQUEST)
 
-        SubEvent_Participant.objects.create(subevent=subevent, user=user)
-        return Response({"message": "You have successfully joined the subevent."}, status=status.HTTP_200_OK)
+        Event_Participant.objects.create(event=event, user=user)
+        return Response({"message": "You have successfully joined the event."}, status=status.HTTP_200_OK)
