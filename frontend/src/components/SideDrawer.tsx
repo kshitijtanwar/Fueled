@@ -112,8 +112,8 @@ const SideDrawer = () => {
         dispatch(logoutUser(navigate));
     };
     useEffect(() => {
-        toast.loading("Fetching events...", { id: "fetchingEvents" });
         const fetchEvents = async () => {
+            toast.loading("Fetching events...", { id: "fetchingEvents" });
             try {
                 const response = await axios.get(`${userprofile}/user/event`, {
                     withCredentials: true,
@@ -124,6 +124,9 @@ const SideDrawer = () => {
                     id: "fetchingEvents",
                 });
             } catch (error) {
+                toast.error("Error fetching events", {
+                    id: "fetchingEvents",
+                });
                 console.error("Error fetching events", error);
             }
         };
