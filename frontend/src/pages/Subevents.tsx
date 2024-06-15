@@ -19,7 +19,7 @@ const Subevents = () => {
     const dispatch = useDispatch<AppDispatch>();
     const navigate = useNavigate();
     const history = useNavigate();
-    const [subevents, setSubevents] = useState([] as SubEvent[]);
+    const [subevents, setSubevents] = useState<SubEvent>();
     const handleLogout = () => {
         dispatch(logoutUser(navigate));
     };
@@ -41,16 +41,17 @@ const Subevents = () => {
                 });
                 setSubevents(response.data);
                 return response.data;
-            } catch (error) {
-                toast.error("Error fetching subevents", {
-                    id: "fetchingSubEvents",
-                });
+            } catch (error: any) {
+                if (error.response.status === 404) {
+                    toast.error("No sub events found", {
+                        id: "fetchingSubEvents",
+                    });
+                }
             }
         };
         fetchSubEvents();
     }, []);
 
-    
     return (
         <>
             <nav className="flex justify-between w-96 mx-auto pt-10 py-6 gap-5">
@@ -89,9 +90,7 @@ const Subevents = () => {
                 </Dropdown>
             </nav>
             <div className="flex flex-col gap-3">
-                {subevents.map((subevent: SubEvent, index) => (
-                    <SubEventCard key={index} subevent={subevent} />
-                ))}
+                {subevents ?  <SubEventCard subevent={subevents} />: <h1 className="w-96 mx-auto text-2xl text-indigo-400 text-center">No subevents found :(</h1>}
             </div>
         </>
     );

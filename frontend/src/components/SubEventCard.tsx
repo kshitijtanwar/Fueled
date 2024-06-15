@@ -6,7 +6,7 @@ const SubEventCard = ({ subevent }: { subevent: SubEvent }) => {
         <div className="mx-auto w-full max-w-sm px-4 py-3 rounded-md shadow-md bg-zinc-800">
             <div className="flex items-center justify-between">
                 <span className="text-sm font-light text-gray-400">
-                    Venue Name
+                    {subevent.venue_name}
                 </span>
                 <span className="px-3 py-1 text-xs  uppercase rounded-full bg-blue-300 text-blue-900">
                     Venue Capacity: {subevent.capacity}
