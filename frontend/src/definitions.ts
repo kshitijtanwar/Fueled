@@ -8,12 +8,27 @@ export interface SignUpType {
     contact_info: number | undefined;
 }
 
+export interface UserType {
+    id: number;
+    user: { id: number; username: string; email: string };
+    contact_info: number;
+}
 export interface UserState {
-    isAuthenticated: boolean;
     loading: boolean;
+    isAuthenticated: boolean;
     error: string | null;
+    user: UserType | null;
 }
 
-export interface ErrorType{
-    error: string ;
+export interface ErrorType {
+    error: string;
+}
+
+export interface Event {
+    id: number;
+    name: string;
+    description: string;
+    start_date: string;
+    end_date: string;
+    is_host: boolean;
 }

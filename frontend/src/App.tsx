@@ -5,6 +5,7 @@ import Login from "./components/Login";
 import HomePage from "./pages/HomePage";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import Events from "./pages/Events";
+import Subevents from "./pages/Subevents";
 
 function App() {
     const router = createBrowserRouter([
@@ -24,8 +25,11 @@ function App() {
         {
             path: "/events",
             element: <Events />,
-            children: [],
         },
+        {
+            path: "events/subevents/:eventID",
+            element: <Subevents />,
+        }
     ]);
     return (
         <Provider store={store}>

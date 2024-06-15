@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import axios from "axios";
 import toast from "react-hot-toast";
 import { userprofile } from "../constants/constants";
@@ -10,6 +10,12 @@ import { useDispatch } from "react-redux";
 import { AppDispatch } from "../store";
 import { Avatar, Dropdown } from "flowbite-react";
 import { logoutUser } from "../store/userSlice";
+import { getUser } from "../store/userSlice";
+import { UserType, Event } from "../definitions";
+import EventCard from "../components/EventCard";
+import { UtilityContext } from "../UtilityContext";
+
+
 const Events = () => {
     const history = useNavigate();
     const navigate = useNavigate();
@@ -17,11 +23,22 @@ const Events = () => {
     const [eventFormSubmitted, setEventFormSubmitted] = useState(false);
     const [isEventFormOpen, setEventFormIsOpen] = useState(false);
     const [events, setEvents] = useState([]);
-
+    const [user, setUser] = useState<UserType>();
     const dispatch = useDispatch<AppDispatch>();
+    const { setIsHost} = useContext(UtilityContext);
     const handleLogout = () => {
         dispatch(logoutUser(navigate));
     };
+
+    useEffect(() => {
+        dispatch(getUser())
+            .then((response) => {
+                setUser(response.payload);
+            })
+            .catch((error) => {
+                console.error("Error fetching user", error);
+            });
+    }, [dispatch]);
     useEffect(() => {
         const fetchEvents = async () => {
             toast.loading("Fetching events...", { id: "fetchingEvents" });
@@ -43,7 +60,6 @@ const Events = () => {
         };
         fetchEvents();
     }, [eventFormSubmitted]);
-    console.log(activeEventBtn);
 
     return (
         <>
@@ -63,14 +79,17 @@ const Events = () => {
                     inline
                 >
                     <Dropdown.Header>
-                        <span className="block text-sm">Bonnie Green</span>
+                        <span className="block text-sm">
+                            {user?.user?.username}
+                        </span>
                         <span className="block truncate text-sm font-medium">
-                            name@flowbite.com
+                            {user?.contact_info}
                         </span>
                     </Dropdown.Header>
-                    <Dropdown.Item>Dashboard</Dropdown.Item>
+                    <Dropdown.Item onClick={() => setEventFormIsOpen(true)}>
+                        Host your event
+                    </Dropdown.Item>
                     <Dropdown.Item>Settings</Dropdown.Item>
-                    <Dropdown.Item>Earnings</Dropdown.Item>
                     <Dropdown.Divider />
                     <Dropdown.Item onClick={() => handleLogout()}>
                         Sign out
@@ -98,39 +117,9 @@ const Events = () => {
                             ? event.is_host
                             : !event.is_host
                     )
-                    .map(
-                        (
-                            event: {
-                                name: string;
-                                description: string;
-                                start_date: string;
-                                end_date: string;
-                                is_host: boolean;
-                            },
-                            index
-                        ) => (
-                            <button
-                                key={index}
-                                className="bg-[#1F1F1F] p-4 my-4 rounded-xl w-full text-left hover:bg-[#2F2F2F] relative"
-                            >
-                                <span
-                                    className={`text-sm font-medium  px-2.5 py-0.5 rounded-tl-md rounded-bl-md absolute right-0 top-2 ${event.is_host ? "bg-purple-100 text-purple-800" : "bg-indigo-100 text-indigo-800 "}`}
-                                >
-                                    {event.is_host ? "Hosted" : "Invited"}
-                                </span>
-                                <h2 className="text-indigo-300 text-lg">
-                                    {event.name}
-                                </h2>
-                                <p className="text-gray-400">
-                                    {event.description}
-                                </p>
-                                <p className="text-gray-400">
-                                    {new Date(event.start_date).toDateString()}{" "}
-                                    to {new Date(event.end_date).toDateString()}
-                                </p>
-                            </button>
-                        )
-                    )}
+                    .map((event: Event, index) => (
+                        <EventCard key={index} event={event} onClick={()=>{setIsHost(event.is_host)}}/>
+                    ))}
                 <EventForm
                     setFunction={setEventFormIsOpen}
                     parameter={isEventFormOpen}
