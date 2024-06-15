@@ -32,3 +32,15 @@ export interface Event {
     end_date: string;
     is_host: boolean;
 }
+
+export interface SubEvent {
+    id: number;
+    name: string;
+    description: string;
+    start_datetime: string;
+    end_datetime: string;
+    venue_name: string;
+    venue_location: string;
+    venue_capacity: number;
+    capacity: number;
+}

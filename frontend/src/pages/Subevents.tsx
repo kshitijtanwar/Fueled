@@ -1,21 +1,55 @@
 import { IoIosArrowRoundBack } from "react-icons/io";
-import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
+import { useNavigate, useParams } from "react-router-dom";
 import { Avatar, Dropdown } from "flowbite-react";
 import userLogo from "../assets/Navbar/userLogo.jpg";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "../store";
 import { logoutUser } from "../store/userSlice";
-import {  useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 import { UtilityContext } from "../UtilityContext";
+import { userprofile } from "../constants/constants";
+import axios from "axios";
+import SubEventCard from "../components/SubEventCard";
+import { SubEvent } from "../definitions";
 const Subevents = () => {
+    const params = useParams();
     const { isHost } = useContext(UtilityContext);
-    const {userInfo} = useContext(UtilityContext);
+    const { userInfo } = useContext(UtilityContext);
     const dispatch = useDispatch<AppDispatch>();
     const navigate = useNavigate();
     const history = useNavigate();
+    const [subevents, setSubevents] = useState([] as SubEvent[]);
     const handleLogout = () => {
         dispatch(logoutUser(navigate));
     };
+
+    useEffect(() => {
+        const fetchSubEvents = async () => {
+            try {
+                toast.loading("Fetching subevents...", {
+                    id: "fetchingSubEvents",
+                });
+                const response = await axios.get(
+                    `${userprofile}/user/subevents/${params.eventID}`,
+                    {
+                        withCredentials: true,
+                    }
+                );
+                toast.success("Subevents fetched successfully", {
+                    id: "fetchingSubEvents",
+                });
+                setSubevents(response.data);
+                return response.data;
+            } catch (error) {
+                toast.error("Error fetching subevents", {
+                    id: "fetchingSubEvents",
+                });
+            }
+        };
+        fetchSubEvents();
+    }, []);
+
     
     return (
         <>
@@ -54,6 +88,11 @@ const Subevents = () => {
                     </Dropdown.Item>
                 </Dropdown>
             </nav>
+            <div className="flex flex-col gap-3">
+                {subevents.map((subevent: SubEvent, index) => (
+                    <SubEventCard key={index} subevent={subevent} />
+                ))}
+            </div>
         </>
     );
 };
