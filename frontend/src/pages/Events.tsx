@@ -26,6 +26,7 @@ const Events = () => {
     const [user, setUser] = useState<UserType>();
     const dispatch = useDispatch<AppDispatch>();
     const { setIsHost} = useContext(UtilityContext);
+    const { setUserInfo} = useContext(UtilityContext);
     const handleLogout = () => {
         dispatch(logoutUser(navigate));
     };
@@ -34,6 +35,7 @@ const Events = () => {
         dispatch(getUser())
             .then((response) => {
                 setUser(response.payload);
+                setUserInfo(response.payload);
             })
             .catch((error) => {
                 console.error("Error fetching user", error);

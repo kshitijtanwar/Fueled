@@ -4,28 +4,19 @@ import { Avatar, Dropdown } from "flowbite-react";
 import userLogo from "../assets/Navbar/userLogo.jpg";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "../store";
-import { logoutUser, getUser } from "../store/userSlice";
-import { UserType } from "../definitions";
-import { useState, useEffect, useContext } from "react";
+import { logoutUser } from "../store/userSlice";
+import {  useContext } from "react";
 import { UtilityContext } from "../UtilityContext";
 const Subevents = () => {
     const { isHost } = useContext(UtilityContext);
-    const [user, setUser] = useState<UserType>();
+    const {userInfo} = useContext(UtilityContext);
     const dispatch = useDispatch<AppDispatch>();
     const navigate = useNavigate();
     const history = useNavigate();
     const handleLogout = () => {
         dispatch(logoutUser(navigate));
     };
-    useEffect(() => {
-        dispatch(getUser())
-            .then((response) => {
-                setUser(response.payload);
-            })
-            .catch((error) => {
-                console.error("Error fetching user", error);
-            });
-    }, [dispatch]);
+    
     return (
         <>
             <nav className="flex justify-between w-96 mx-auto pt-10 py-6 gap-5">
@@ -47,10 +38,10 @@ const Subevents = () => {
                 >
                     <Dropdown.Header>
                         <span className="block text-sm">
-                            {user?.user?.username}
+                            {userInfo?.user?.username}
                         </span>
                         <span className="block truncate text-sm font-medium">
-                            {user?.contact_info}
+                            {userInfo?.contact_info}
                         </span>
                     </Dropdown.Header>
                     {isHost && (
