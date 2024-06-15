@@ -17,7 +17,6 @@ import axios from "axios";
 import { Avatar } from "flowbite-react";
 import { userprofile } from "../constants/constants";
 import { useState, useEffect, useContext } from "react";
-import Subevents from "./SubeventPanel";
 import { logoutUser } from "../store/userSlice";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
@@ -112,8 +111,8 @@ const SideDrawer = () => {
         dispatch(logoutUser(navigate));
     };
     useEffect(() => {
-        toast.loading("Fetching events...", { id: "fetchingEvents" });
         const fetchEvents = async () => {
+            toast.loading("Fetching events...", { id: "fetchingEvents" });
             try {
                 const response = await axios.get(`${userprofile}/user/event`, {
                     withCredentials: true,
@@ -124,6 +123,9 @@ const SideDrawer = () => {
                     id: "fetchingEvents",
                 });
             } catch (error) {
+                toast.error("Error fetching events", {
+                    id: "fetchingEvents",
+                });
                 console.error("Error fetching events", error);
             }
         };
@@ -287,7 +289,6 @@ const SideDrawer = () => {
                 setEventFormSubmitted={setEventFormSubmitted}
             />
 
-            <Subevents eventID={eventID || ""} />
         </Box>
     );
 };

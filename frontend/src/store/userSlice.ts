@@ -9,6 +9,8 @@ const initialState: UserState = {
     isAuthenticated: false,
     loading: false,
     error: null,
+    user: null,
+    
 };
 
 export const registerUser = createAsyncThunk(
@@ -51,7 +53,7 @@ export const loginUser = createAsyncThunk(
                 { withCredentials: true }
             );
             toast.success("Logged in", { id: "logging" });
-            navigate("/main"); // Navigate after successful login
+            navigate("/events"); // Navigate after successful login
             console.log(response);
             
             return response.data;
@@ -81,6 +83,24 @@ export const logoutUser = createAsyncThunk(
                 return rejectWithValue(errorResponse);
             } else {
                 toast.error("An unexpected error occurred"); // Show error toast
+                return rejectWithValue({ error: "An unexpected error occurred" });
+            }
+        }
+    }
+);
+export const getUser = createAsyncThunk(
+    "user/getUser",
+    async (_, { rejectWithValue }) => {
+        try {
+            const response = await axios.get(`${userprofile}/user/profile/`,{
+                withCredentials: true,
+            });
+            return response.data;
+        } catch (error: any) {
+            if (axios.isAxiosError(error) && error.response) {
+                const errorResponse = error.response.data as ErrorType;
+                return rejectWithValue(errorResponse);
+            } else {
                 return rejectWithValue({ error: "An unexpected error occurred" });
             }
         }
@@ -129,7 +149,19 @@ const userSlice = createSlice({
             .addCase(logoutUser.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.error.message || "Failed to logout";
+            })
+            .addCase(getUser.pending, (state) => {
+                state.loading = true;
+            })
+            .addCase(getUser.fulfilled, (state, action) => {
+                state.loading = false;
+                state.user = action.payload;
+            })
+            .addCase(getUser.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload as string;
             });
+            ;
     },
 });
 

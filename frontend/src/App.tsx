@@ -4,8 +4,8 @@ import Register from "./components/Register";
 import Login from "./components/Login";
 import HomePage from "./pages/HomePage";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
-import MainUserPage from "./pages/Root";
-import SideDrawer from "./components/SideDrawer";
+import Events from "./pages/Events";
+import Subevents from "./pages/Subevents";
 
 function App() {
     const router = createBrowserRouter([
@@ -23,16 +23,13 @@ function App() {
             element: <Register />,
         },
         {
-            path: "/main",
-            element: <MainUserPage />,
-            children: [
-                {
-                    index: true,
-                    element: <SideDrawer />,
-                },
-                
-            ],
+            path: "/events",
+            element: <Events />,
         },
+        {
+            path: "events/subevents/:eventID",
+            element: <Subevents />,
+        }
     ]);
     return (
         <Provider store={store}>
