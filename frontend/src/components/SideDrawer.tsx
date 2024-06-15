@@ -17,7 +17,6 @@ import axios from "axios";
 import { Avatar } from "flowbite-react";
 import { userprofile } from "../constants/constants";
 import { useState, useEffect, useContext } from "react";
-import Subevents from "./SubeventPanel";
 import { logoutUser } from "../store/userSlice";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
@@ -290,7 +289,6 @@ const SideDrawer = () => {
                 setEventFormSubmitted={setEventFormSubmitted}
             />
 
-            <Subevents eventID={eventID || ""} />
         </Box>
     );
 };

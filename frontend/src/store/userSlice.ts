@@ -51,7 +51,7 @@ export const loginUser = createAsyncThunk(
                 { withCredentials: true }
             );
             toast.success("Logged in", { id: "logging" });
-            navigate("/main"); // Navigate after successful login
+            navigate("/events"); // Navigate after successful login
             console.log(response);
             
             return response.data;
