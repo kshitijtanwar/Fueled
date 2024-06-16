@@ -147,22 +147,23 @@ export default function EventForm(props: Props) {
                         pb: 2,
                         height: "100%",
                         overflow: "auto",
+                        backgroundColor: "#24292C",
                     }}
                 >
                     <form onSubmit={handleSubmit} className="w-4/5 mx-auto">
-                        <h1 className="flex justify-center items-center text-violet-800 mt-5">
+                        <h1 className="flex justify-center items-center text-violet-600 mt-5">
                             <HiCalendar className="mr-2" />
                             NEW EVENT
                         </h1>
                         <div className="mb-5">
                             <Label
                                 htmlFor="title"
-                                className="mb-2 block text-base"
+                                className="mb-2 block text-base text-indigo-300"
                             >
                                 Title
                             </Label>
                             <input
-                                className="w-full p-2 rounded bg-grey-primary text-grey-tertiary"
+                                className="w-full p-2 rounded bg-grey-primary text-grey-primary"
                                 id="title"
                                 name="title"
                                 placeholder="Enter event name"
@@ -173,12 +174,12 @@ export default function EventForm(props: Props) {
                         <div className="mb-5">
                             <Label
                                 htmlFor="description"
-                                className="mb-2 block text-base"
+                                className="mb-2 block text-base text-indigo-300"
                             >
                                 Description
                             </Label>
                             <textarea
-                                className="w-full p-2 rounded bg-grey-primary text-grey-tertiary border-none"
+                                className="w-full p-2 rounded bg-grey-primary text-grey-primary border-none"
                                 id="description"
                                 name="description"
                                 placeholder="Write event description..."
@@ -188,7 +189,7 @@ export default function EventForm(props: Props) {
                             />
                         </div>
                         <div className="mb-6 flex flex-col">
-                            <Label className="mb-2 block text-base">
+                            <Label className="mb-2 block text-base text-indigo-300">
                                 Start date
                             </Label>
                             <DatePicker
@@ -196,22 +197,22 @@ export default function EventForm(props: Props) {
                                 selected={startDate}
                                 onChange={(date: Date) => setStartDate(date)}
                                 dateFormat="yyyy-MM-dd"
-                                className="w-full p-2 rounded bg-grey-primary text-grey-tertiary border-none"
+                                className="w-full p-2 rounded bg-grey-primary text-grey-primary border-none"
                             />
                         </div>
                         <div className="mb-6 flex flex-col">
-                            <Label className="mb-2 block text-base">
+                            <Label className="mb-2 block text-base text-indigo-300">
                                 End date
                             </Label>
                             <DatePicker
                                 placeholderText="Select a date"
-                                className="w-full p-2  rounded bg-grey-primary text-grey-tertiary border-none"
+                                className="w-full p-2  rounded bg-grey-primary text-grey-primary border-none"
                                 selected={endDate}
                                 onChange={(date: Date) => setEndDate(date)}
                                 dateFormat="yyyy-MM-dd"
                             />
                         </div>
-                        <Button type="submit" className="w-full bg-violet-600">
+                        <Button type="submit" className="w-full bg-violet-600 hover:bg-violet-700 hover:duration-100">
                             <HiCalendar className="mr-2" />
                             Create event
                         </Button>
