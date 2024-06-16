@@ -2,7 +2,6 @@ import { useContext, useEffect, useState } from "react";
 import axios from "axios";
 import toast from "react-hot-toast";
 import { userprofile } from "../constants/constants";
-import EventForm from "../components/EventForm";
 import { IoIosArrowRoundBack } from "react-icons/io";
 import userLogo from "../assets/Navbar/userLogo.jpg";
 import { useNavigate } from "react-router-dom";
@@ -16,6 +15,7 @@ import EventCard from "../components/EventCard";
 import { UtilityContext } from "../UtilityContext";
 import Skeleton from "@mui/material/Skeleton";
 import Typography from "@mui/material/Typography";
+import SwipeableEdgeDrawer from "../components/EventForm";
 
 const Events = () => {
     const history = useNavigate();
@@ -29,7 +29,7 @@ const Events = () => {
     const dispatch = useDispatch<AppDispatch>();
     const { setIsHost } = useContext(UtilityContext);
     const { setUserInfo } = useContext(UtilityContext);
-    const {setEventName} = useContext(UtilityContext);
+    const { setEventName } = useContext(UtilityContext);
 
     const handleLogout = () => {
         dispatch(logoutUser(navigate));
@@ -142,9 +142,9 @@ const Events = () => {
                             }}
                         />
                     ))}
-                <EventForm
-                    setFunction={setEventFormIsOpen}
-                    parameter={isEventFormOpen}
+                <SwipeableEdgeDrawer
+                    isEventFormOpen={isEventFormOpen}
+                    setEventFormIsOpen={setEventFormIsOpen}
                     setEventFormSubmitted={setEventFormSubmitted}
                 />
             </main>
