@@ -11,7 +11,7 @@ const EventCard = ({ event, onClick }: EventCardProps) => {
         <Link to={`/events/subevents/${event.id}`}>
             <button 
                 className="bg-[#1F1F1F] p-4 my-4 rounded-xl w-full text-left hover:bg-violet-950 relative"
-                onClick={onClick} // Add this line
+                onClick={onClick} 
             >
                 <span
                     className={`text-sm font-medium  px-2.5 py-0.5 rounded-tl-md rounded-bl-md absolute right-0 top-2 ${event.is_host ? "bg-purple-100 text-purple-800" : "bg-indigo-100 text-indigo-800 "}`}
