@@ -3,12 +3,15 @@ import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../store";
 import { registerUser } from "../store/userSlice";
 import { Label, TextInput } from "flowbite-react";
+import { IoMdArrowForward } from "react-icons/io";
 
 const Register: React.FC = () => {
     const [username, setUsername] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-    const [contactInfo, setContactInfo] = useState<number | undefined>(undefined);
+    const [contactInfo, setContactInfo] = useState<number | undefined>(
+        undefined
+    );
     const dispatch = useDispatch<AppDispatch>();
     const { loading, error } = useSelector((state: RootState) => state.user);
 
@@ -26,7 +29,7 @@ const Register: React.FC = () => {
 
     return (
         <>
-            <h1 className="w-11/12 mx-auto text-center text-3xl mt-4 mb-8">
+            <h1 className="w-11/12 mx-auto text-center text-3xl mt-4 mb-8 text-white">
                 Create your account
             </h1>
             <form
@@ -35,7 +38,11 @@ const Register: React.FC = () => {
             >
                 <div>
                     <div className="mb-2 block">
-                        <Label htmlFor="username" value="Username" />
+                        <Label
+                            htmlFor="username"
+                            value="Username"
+                            className="text-white"
+                        />
                     </div>
                     <TextInput
                         type="text"
@@ -48,7 +55,11 @@ const Register: React.FC = () => {
                 </div>
                 <div>
                     <div className="mb-2 block">
-                        <Label htmlFor="email" value="Email" />
+                        <Label
+                            htmlFor="email"
+                            value="Email"
+                            className="text-white"
+                        />
                     </div>
                     <TextInput
                         type="email"
@@ -61,7 +72,11 @@ const Register: React.FC = () => {
                 </div>
                 <div>
                     <div className="mb-2 block">
-                        <Label htmlFor="password" value="Password" />
+                        <Label
+                            htmlFor="password"
+                            value="Password"
+                            className="text-white"
+                        />
                     </div>
                     <TextInput
                         id="password"
@@ -73,26 +88,43 @@ const Register: React.FC = () => {
                 </div>
                 <div>
                     <div className="mb-2 block">
-                        <Label htmlFor="contactInfo" value="Contact Info" />
+                        <Label
+                            htmlFor="contactInfo"
+                            value="Contact Info"
+                            className="text-white"
+                        />
                     </div>
                     <TextInput
                         id="contactInfo"
                         type="text"
-                        value={contactInfo !== undefined ? contactInfo.toString() : ""}
-                        onChange={(e) => setContactInfo(parseInt(e.target.value) || undefined)}
+                        value={
+                            contactInfo !== undefined
+                                ? contactInfo.toString()
+                                : ""
+                        }
+                        onChange={(e) =>
+                            setContactInfo(
+                                parseInt(e.target.value) || undefined
+                            )
+                        }
                         placeholder="Contact Info"
                         required
                     />
                 </div>
                 <button
                     type="submit"
-                    className="border bg-indigo-primary text-white py-3 rounded-lg hover:bg-indigo-secondary duration-150"
+                    className=" bg-indigo-primary text-white py-3 rounded-lg hover:bg-indigo-secondary duration-150"
                     disabled={loading}
                 >
                     {loading ? "Loading..." : "Register"}
                 </button>
                 {error && <p className="text-red-500 text-center">{error}</p>}
-                <a href="/login" className="mx-auto text-blue-500 hover:underline">Already have an account? Log in</a>
+                <a
+                    href="/login"
+                    className="mx-auto text-blue-500 hover:underline flex items-center"
+                >
+                    Already have an account? Lets log in <IoMdArrowForward />
+                </a>
             </form>
         </>
     );

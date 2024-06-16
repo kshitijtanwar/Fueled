@@ -29,6 +29,8 @@ const Events = () => {
     const dispatch = useDispatch<AppDispatch>();
     const { setIsHost } = useContext(UtilityContext);
     const { setUserInfo } = useContext(UtilityContext);
+    const {setEventName} = useContext(UtilityContext);
+
     const handleLogout = () => {
         dispatch(logoutUser(navigate));
     };
@@ -136,6 +138,7 @@ const Events = () => {
                             event={event}
                             onClick={() => {
                                 setIsHost(event.is_host);
+                                setEventName(event.name);
                             }}
                         />
                     ))}

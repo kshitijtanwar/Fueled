@@ -7,6 +7,8 @@ interface UtilityContextProps {
     setIsHost: React.Dispatch<React.SetStateAction<boolean>>;
     userInfo: UserType | null;
     setUserInfo: React.Dispatch<React.SetStateAction<UserType | null>>;
+    eventName: string;
+    setEventName: React.Dispatch<React.SetStateAction<string>>;
 }
 
 export const UtilityContext = React.createContext<UtilityContextProps>({
@@ -16,6 +18,8 @@ export const UtilityContext = React.createContext<UtilityContextProps>({
     setIsHost: () => {},
     userInfo: null,
     setUserInfo: () => {},
+    eventName: "",
+    setEventName: () => {},
 });
 
 export const UtilityProvider: React.FC<{ children: React.ReactNode }> = ({
@@ -24,10 +28,20 @@ export const UtilityProvider: React.FC<{ children: React.ReactNode }> = ({
     const [render, setRender] = useState<boolean>(false);
     const [isHost, setIsHost] = useState<boolean>(false);
     const [userInfo, setUserInfo] = useState<UserType | null>(null);
+    const [eventName, setEventName] = useState<string>("");
 
     return (
         <UtilityContext.Provider
-            value={{ render, setRender, isHost, setIsHost, userInfo , setUserInfo}}
+            value={{
+                render,
+                setRender,
+                isHost,
+                setIsHost,
+                userInfo,
+                setUserInfo,
+                eventName,
+                setEventName,
+            }}
         >
             {children}
         </UtilityContext.Provider>

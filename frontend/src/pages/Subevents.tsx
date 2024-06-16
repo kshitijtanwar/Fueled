@@ -17,6 +17,7 @@ import Typography from "@mui/material/Typography";
 
 const Subevents = () => {
     const params = useParams();
+    const { eventName } = useContext(UtilityContext);
     const { isHost } = useContext(UtilityContext);
     const { userInfo } = useContext(UtilityContext);
     const dispatch = useDispatch<AppDispatch>();
@@ -33,7 +34,7 @@ const Subevents = () => {
             try {
                 setLoading(true);
                 toast.loading("Fetching subevents...", {
-                    id: "fetchingSubEvents",
+                    id: "fetchingEvents",
                 });
                 const response = await axios.get(
                     `${userprofile}/user/subevents/?eventID=${params.eventID}`,
@@ -45,21 +46,21 @@ const Subevents = () => {
                 setLoading(false);
                 if (response.data.length === 0) {
                     toast.error("No activities events found", {
-                        id: "fetchingSubEvents",
+                        id: "fetchingEvents",
                     });
                 } else
                     toast.success("Subevents fetched successfully", {
-                        id: "fetchingSubEvents",
+                        id: "fetchingEvents",
                     });
 
                 return response.data;
             } catch (error: any) {
                 if (error.response.status === 404) {
                     toast.error("No sub events found", {
-                        id: "fetchingSubEvents",
+                        id: "fetchingEvents",
                     });
                 }
-                toast.error(error, { id: "fetchingSubEvents" });
+                toast.error(error, { id: "fetchingEvents" });
             }
         };
         fetchSubEvents();
@@ -75,7 +76,8 @@ const Subevents = () => {
                     />
                     <h1 className="text-indigo-300 text-xl leading-none">
                         Upcoming Activites
-                        <br /> <span className="text-base">for {params.eventID}</span>
+                        <br />{" "}
+                        <span className="text-base">for {eventName}</span>
                     </h1>
                 </div>
                 <Dropdown
