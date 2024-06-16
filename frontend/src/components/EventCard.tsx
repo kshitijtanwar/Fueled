@@ -10,7 +10,7 @@ const EventCard = ({ event, onClick }: EventCardProps) => {
     return (
         <Link to={`/events/subevents/${event.id}`}>
             <button 
-                className="bg-[#1F1F1F] p-4 my-4 rounded-xl w-full text-left hover:bg-[#2F2F1F] relative"
+                className="bg-[#1F1F1F] p-4 my-4 rounded-xl w-full text-left hover:bg-violet-950 relative"
                 onClick={onClick} // Add this line
             >
                 <span

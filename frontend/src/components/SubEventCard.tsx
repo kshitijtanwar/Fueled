@@ -1,9 +1,10 @@
 import { CiCalendarDate } from "react-icons/ci";
 import { SubEvent } from "../definitions";
+import {format} from "date-fns";
 const SubEventCard = ({ subevent }: { subevent: SubEvent }) => {
 
     return (
-        <div className="mx-auto w-full max-w-sm px-4 py-3 rounded-md shadow-md bg-zinc-800">
+        <div className="mx-auto w-full max-w-sm px-4 py-3 rounded-md shadow-md bg-zinc-800 hover:cursor-pointer hover:bg-violet-950">
             <div className="flex items-center justify-between">
                 <span className="text-sm font-light text-gray-400">
                     {subevent.venue_name}
@@ -21,14 +22,14 @@ const SubEventCard = ({ subevent }: { subevent: SubEvent }) => {
                     <p className="mt-2 text-sm  text-gray-300 flex items-center gap-1">
                         <CiCalendarDate className="text-2xl" />
                         <span className="text-sm text-gray-200 font-medium">Activity starting date:</span>{" "}
-                         {subevent.start_datetime}
+                         {format(subevent.start_datetime,'MMMM dd, yyyy')}
                     </p>
                     <p className="mt-2 text-sm text-gray-200 dark:text-gray-300 flex items-center gap-1">
                         <CiCalendarDate className="text-2xl" />
                         <span className="text-sm text-gray-200 font-medium">
                             Activity ending date:
                         </span>{" "}
-                        {subevent.end_datetime}
+                        {format(subevent.end_datetime,'MMMM dd, yyyy')}
                     </p>
                 </div>
             </div>
