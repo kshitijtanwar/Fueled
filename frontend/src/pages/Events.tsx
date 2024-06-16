@@ -14,7 +14,8 @@ import { getUser } from "../store/userSlice";
 import { UserType, Event } from "../definitions";
 import EventCard from "../components/EventCard";
 import { UtilityContext } from "../UtilityContext";
-
+import Skeleton from "@mui/material/Skeleton";
+import Typography from "@mui/material/Typography";
 
 const Events = () => {
     const history = useNavigate();
@@ -23,10 +24,11 @@ const Events = () => {
     const [eventFormSubmitted, setEventFormSubmitted] = useState(false);
     const [isEventFormOpen, setEventFormIsOpen] = useState(false);
     const [events, setEvents] = useState([]);
+    const [loading, setLoading] = useState(true);
     const [user, setUser] = useState<UserType>();
     const dispatch = useDispatch<AppDispatch>();
-    const { setIsHost} = useContext(UtilityContext);
-    const { setUserInfo} = useContext(UtilityContext);
+    const { setIsHost } = useContext(UtilityContext);
+    const { setUserInfo } = useContext(UtilityContext);
     const handleLogout = () => {
         dispatch(logoutUser(navigate));
     };
@@ -43,6 +45,7 @@ const Events = () => {
     }, [dispatch]);
     useEffect(() => {
         const fetchEvents = async () => {
+            setLoading(true);
             toast.loading("Fetching events...", { id: "fetchingEvents" });
             try {
                 const response = await axios.get(`${userprofile}/user/event`, {
@@ -50,6 +53,7 @@ const Events = () => {
                 });
 
                 setEvents(response.data);
+                setLoading(false);
                 toast.success("Events fetched successfully", {
                     id: "fetchingEvents",
                 });
@@ -113,6 +117,13 @@ const Events = () => {
                 </button>
             </div>
             <main className="w-96 mx-auto">
+                {loading && (
+                    <Typography component="div" variant="h1">
+                        {[...Array(5)].map((_, index) => (
+                            <Skeleton key={index} />
+                        ))}
+                    </Typography>
+                )}
                 {events
                     ?.filter((event: { is_host: boolean }) =>
                         activeEventBtn === "hosted"
@@ -120,7 +131,13 @@ const Events = () => {
                             : !event.is_host
                     )
                     .map((event: Event, index) => (
-                        <EventCard key={index} event={event} onClick={()=>{setIsHost(event.is_host)}}/>
+                        <EventCard
+                            key={index}
+                            event={event}
+                            onClick={() => {
+                                setIsHost(event.is_host);
+                            }}
+                        />
                     ))}
                 <EventForm
                     setFunction={setEventFormIsOpen}
