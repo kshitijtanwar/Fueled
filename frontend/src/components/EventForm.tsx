@@ -1,26 +1,70 @@
-import React, { useState } from "react";
-import { Button, Drawer, Label } from "flowbite-react";
+import * as React from "react";
+import { Global } from "@emotion/react";
+import { styled } from "@mui/material/styles";
+import CssBaseline from "@mui/material/CssBaseline";
+import { grey } from "@mui/material/colors";
+import Box from "@mui/material/Box";
+import SwipeableDrawer from "@mui/material/SwipeableDrawer";
+import { useState } from "react";
+import { userprofile } from "../constants/constants";
+import { Button, Label } from "flowbite-react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { HiCalendar } from "react-icons/hi";
-import { userprofile } from "../constants/constants";
 
-interface EventFormFunction {
-    parameter: boolean;
-    setFunction: React.Dispatch<React.SetStateAction<boolean>>;
+const drawerBleeding = 0;
+
+interface Props {
+    window?: () => Window;
+    isEventFormOpen: boolean;
+    setEventFormIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
     setEventFormSubmitted: React.Dispatch<React.SetStateAction<boolean>>;
-
 }
 
-const EventForm = ({ parameter, setFunction, setEventFormSubmitted }: EventFormFunction) => {
+const Root = styled("div")(({ theme }) => ({
+    height: "100%",
+    backgroundColor:
+        theme.palette.mode === "light"
+            ? grey[100]
+            : theme.palette.background.default,
+}));
+
+const StyledBox = styled(Box)(({ theme }) => ({
+    backgroundColor: theme.palette.mode === "light" ? "#fff" : grey[800],
+}));
+
+const Puller = styled(Box)(({ theme }) => ({
+    width: 30,
+    height: 6,
+    backgroundColor: theme.palette.mode === "light" ? grey[300] : grey[900],
+    borderRadius: 3,
+    position: "absolute",
+    top: 8,
+    left: "calc(50% - 15px)",
+}));
+
+export default function EventForm(props: Props) {
     const [name, setName] = useState("");
     const [description, setDescription] = useState("");
     const [startDate, setStartDate] = useState<Date | null>(null);
     const [endDate, setEndDate] = useState<Date | null>(null);
-    
+    const { window } = props;
 
+    const handleClose = () => props.setEventFormIsOpen(false);
+    const styles = {
+        ".MuiDrawer-paper ": {
+            height: "calc(100% - 100px)",
+            top: 100,
+        },
+    };
 
-    const handleClose = () => setFunction(false);
+    const toggleDrawer = (newOpen: boolean) => () => {
+        props.setEventFormIsOpen(newOpen);
+    };
+
+    // This is used only for the example
+    const container =
+        window !== undefined ? () => window().document.body : undefined;
 
     const handleSubmit = async (event: React.FormEvent) => {
         event.preventDefault();
@@ -48,7 +92,7 @@ const EventForm = ({ parameter, setFunction, setEventFormSubmitted }: EventFormF
                 // Handle success
                 console.log("Event created successfully");
                 handleClose();
-                setEventFormSubmitted(prevState => !prevState); // Toggle the state variable
+                props.setEventFormSubmitted((prevState) => !prevState); // Toggle the state variable
             } else {
                 // Handle error
                 const errorData = await response.json();
@@ -60,22 +104,60 @@ const EventForm = ({ parameter, setFunction, setEventFormSubmitted }: EventFormF
     };
 
     return (
-        <div className="z-20">
-            <Drawer
-                open={parameter}
-                onClose={handleClose}
-                className="bg-grey-tertiary"
+        <Root>
+            <CssBaseline />
+            <Global
+                styles={{
+                    ".MuiDrawer-root > .MuiPaper-root": {
+                        height: drawerBleeding,
+                        overflow: "visible",
+                        backgroundColor: "#24292C", // Example background color
+                    },
+                }}
+            />
+            <SwipeableDrawer
+                container={container}
+                anchor="bottom"
+                open={props.isEventFormOpen}
+                onClose={toggleDrawer(false)}
+                onOpen={toggleDrawer(true)}
+                swipeAreaWidth={drawerBleeding}
+                disableSwipeToOpen={false}
+                ModalProps={{
+                    keepMounted: true,
+                }}
+                sx={styles}
             >
-                <h1 className="flex justify-center items-center text-violet-400">
-                    <HiCalendar className="mr-2" />
-                    NEW EVENT
-                </h1>
-                <Drawer.Items>
-                    <form onSubmit={handleSubmit}>
-                        <div className="mb-6 mt-3">
+                <StyledBox
+                    sx={{
+                        position: "absolute",
+                        top: -drawerBleeding,
+                        borderTopLeftRadius: 8,
+                        borderTopRightRadius: 8,
+                        visibility: "visible",
+                        right: 0,
+                        left: 0,
+                    }}
+                >
+                    <Puller />
+                </StyledBox>
+                <StyledBox
+                    sx={{
+                        px: 2,
+                        pb: 2,
+                        height: "100%",
+                        overflow: "auto",
+                    }}
+                >
+                    <form onSubmit={handleSubmit} className="w-4/5 mx-auto">
+                        <h1 className="flex justify-center items-center text-violet-800 mt-5">
+                            <HiCalendar className="mr-2" />
+                            NEW EVENT
+                        </h1>
+                        <div className="mb-5">
                             <Label
                                 htmlFor="title"
-                                className="mb-2 block text-white"
+                                className="mb-2 block text-base"
                             >
                                 Title
                             </Label>
@@ -88,15 +170,15 @@ const EventForm = ({ parameter, setFunction, setEventFormSubmitted }: EventFormF
                                 onChange={(e) => setName(e.target.value)}
                             />
                         </div>
-                        <div className="mb-6">
+                        <div className="mb-5">
                             <Label
                                 htmlFor="description"
-                                className="mb-2 block text-white"
+                                className="mb-2 block text-base"
                             >
                                 Description
                             </Label>
                             <textarea
-                                className="w-full p-2 rounded bg-grey-primary text-grey-tertiary"
+                                className="w-full p-2 rounded bg-grey-primary text-grey-tertiary border-none"
                                 id="description"
                                 name="description"
                                 placeholder="Write event description..."
@@ -105,21 +187,25 @@ const EventForm = ({ parameter, setFunction, setEventFormSubmitted }: EventFormF
                                 onChange={(e) => setDescription(e.target.value)}
                             />
                         </div>
-                        <div className="mb-6">
-                            <Label className="text-white">
-                                Pick start date
+                        <div className="mb-6 flex flex-col">
+                            <Label className="mb-2 block text-base">
+                                Start date
                             </Label>
                             <DatePicker
+                                placeholderText="Select a date"
                                 selected={startDate}
                                 onChange={(date: Date) => setStartDate(date)}
                                 dateFormat="yyyy-MM-dd"
-                                className="w-full p-2 border rounded bg-grey-primary text-grey-tertiary"
+                                className="w-full p-2 rounded bg-grey-primary text-grey-tertiary border-none"
                             />
                         </div>
-                        <div className="mb-6">
-                            <Label className="text-white">Pick end date</Label>
+                        <div className="mb-6 flex flex-col">
+                            <Label className="mb-2 block text-base">
+                                End date
+                            </Label>
                             <DatePicker
-                                className="w-full p-2 border rounded bg-grey-primary text-grey-tertiary"
+                                placeholderText="Select a date"
+                                className="w-full p-2  rounded bg-grey-primary text-grey-tertiary border-none"
                                 selected={endDate}
                                 onChange={(date: Date) => setEndDate(date)}
                                 dateFormat="yyyy-MM-dd"
@@ -130,10 +216,8 @@ const EventForm = ({ parameter, setFunction, setEventFormSubmitted }: EventFormF
                             Create event
                         </Button>
                     </form>
-                </Drawer.Items>
-            </Drawer>
-        </div>
+                </StyledBox>
+            </SwipeableDrawer>
+        </Root>
     );
-};
-
-export default EventForm;
+}
