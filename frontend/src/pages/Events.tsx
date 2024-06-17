@@ -15,7 +15,7 @@ import EventCard from "../components/EventCard";
 import { UtilityContext } from "../UtilityContext";
 import Skeleton from "@mui/material/Skeleton";
 import Typography from "@mui/material/Typography";
-import SwipeableEdgeDrawer from "../components/EventForm";
+import EventForm from "../components/EventForm";
 
 const Events = () => {
     const history = useNavigate();
@@ -142,7 +142,7 @@ const Events = () => {
                             }}
                         />
                     ))}
-                <SwipeableEdgeDrawer
+                <EventForm
                     isEventFormOpen={isEventFormOpen}
                     setEventFormIsOpen={setEventFormIsOpen}
                     setEventFormSubmitted={setEventFormSubmitted}
