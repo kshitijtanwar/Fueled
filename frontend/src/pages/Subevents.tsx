@@ -14,6 +14,7 @@ import SubEventCard from "../components/SubEventCard";
 import { SubEvent } from "../definitions";
 import Skeleton from "@mui/material/Skeleton";
 import Typography from "@mui/material/Typography";
+import SubEventForm from "../components/SubEventForm";
 
 const Subevents = () => {
     const params = useParams();
@@ -25,6 +26,12 @@ const Subevents = () => {
     const history = useNavigate();
     const [loading, setLoading] = useState(true);
     const [subevents, setSubevents] = useState<SubEvent[]>();
+
+    const [isSubEventFormOpen, setSubEventFormIsOpen] = useState(false);
+    const [subEventFormSubmitted, setSubEventFormSubmitted] = useState(false);
+    
+
+
     const handleLogout = () => {
         dispatch(logoutUser(navigate));
     };
@@ -64,7 +71,7 @@ const Subevents = () => {
             }
         };
         fetchSubEvents();
-    }, []);
+    }, [subEventFormSubmitted]);
 
     return (
         <div className="w-96 mx-auto">
@@ -96,7 +103,7 @@ const Subevents = () => {
                         </span>
                     </Dropdown.Header>
                     {isHost && (
-                        <Dropdown.Item>Add your activities </Dropdown.Item>
+                        <Dropdown.Item onClick={() => setSubEventFormIsOpen(true)}>Add your activities </Dropdown.Item>
                     )}
                     <Dropdown.Item>Settings</Dropdown.Item>
                     <Dropdown.Divider />
@@ -125,6 +132,11 @@ const Subevents = () => {
                 {subevents?.map((subevent: SubEvent, index) => (
                     <SubEventCard subevent={subevent} key={index} />
                 ))}
+                <SubEventForm
+                    isSubEventFormOpen={isSubEventFormOpen}
+                    setSubEventFormIsOpen={setSubEventFormIsOpen}
+                    setSubEventFormSubmitted={setSubEventFormSubmitted}
+                />
             </div>
         </div>
     );

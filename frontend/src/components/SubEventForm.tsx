@@ -11,14 +11,17 @@ import { Button, Label } from "flowbite-react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { HiCalendar } from "react-icons/hi";
+import axios from "axios";
+import { useParams } from "react-router-dom";
+import toast from "react-hot-toast";
 
 const drawerBleeding = 0;
 
 interface Props {
     window?: () => Window;
-    isEventFormOpen: boolean;
-    setEventFormIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
-    setEventFormSubmitted: React.Dispatch<React.SetStateAction<boolean>>;
+    isSubEventFormOpen: boolean;
+    setSubEventFormIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
+    setSubEventFormSubmitted: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const Root = styled("div")(({ theme }) => ({
@@ -43,14 +46,17 @@ const Puller = styled(Box)(({ theme }) => ({
     left: "calc(50% - 15px)",
 }));
 
-export default function EventForm(props: Props) {
+export default function SubEventForm(props: Props) {
+    const params = useParams();
     const [name, setName] = useState("");
-    const [description, setDescription] = useState("");
-    const [startDate, setStartDate] = useState<Date | null>(null);
-    const [endDate, setEndDate] = useState<Date | null>(null);
+    const [start_datetime, setStart_datetime] = useState<Date | null>(null);
+    const [end_datetime, setEnd_datetime] = useState<Date | null>(null);
+    const [venue_name, setVenue_name] = useState<string>("");
+    const [venue_location, setVenue_location] = useState<string>("");
+    const [venue_capacity, setVenue_capacity] = useState<number>(0);
+    const capacity = 0;
     const { window } = props;
 
-    const handleClose = () => props.setEventFormIsOpen(false);
     const styles = {
         ".MuiDrawer-paper ": {
             height: "calc(100% - 100px)",
@@ -59,7 +65,7 @@ export default function EventForm(props: Props) {
     };
 
     const toggleDrawer = (newOpen: boolean) => () => {
-        props.setEventFormIsOpen(newOpen);
+        props.setSubEventFormIsOpen(newOpen);
     };
 
     // This is used only for the example
@@ -69,37 +75,35 @@ export default function EventForm(props: Props) {
     const handleSubmit = async (event: React.FormEvent) => {
         event.preventDefault();
 
-        const eventData = {
-            name,
-            description,
-            start_date: startDate ? startDate.toISOString().split("T")[0] : "",
-            end_date: endDate ? endDate.toISOString().split("T")[0] : "",
-            organizer: 1,
-            subevents: [],
-        };
-
         try {
-            const response = await fetch(`${userprofile}/user/event/`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
+            toast.loading("Creating activity...", { id: "creatingEvent" });
+            const response = await axios.post(
+                `${userprofile}/user/subevents/`,
+                {
+                    event: params.eventID,
+                    name,
+                    start_datetime,
+                    end_datetime,
+                    venue_name,
+                    venue_location,
+                    venue_capacity,
+                    capacity,
                 },
-                body: JSON.stringify(eventData),
-                credentials: "include",
-            });
-
-            if (response.ok) {
-                // Handle success
-                console.log("Event created successfully");
-                handleClose();
-                props.setEventFormSubmitted((prevState) => !prevState); // Toggle the state variable
-            } else {
-                // Handle error
-                const errorData = await response.json();
-                console.error("Error creating event:", errorData);
+                {
+                    withCredentials: true,
+                }
+            );
+            if (response.status === 200 || response.status === 201) {
+                props.setSubEventFormSubmitted(true);
+                props.setSubEventFormIsOpen(false);
             }
-        } catch (error) {
-            console.error("Network error:", error);
+            toast.success("Activity created successfully", {
+                id: "creatingEvent",
+            });
+            return response.data;
+        } catch (error: any) {
+            toast.error("Error creating event", { id: "creatingEvent" });
+            console.error("Error creating event", error);
         }
     };
 
@@ -118,7 +122,7 @@ export default function EventForm(props: Props) {
             <SwipeableDrawer
                 container={container}
                 anchor="bottom"
-                open={props.isEventFormOpen}
+                open={props.isSubEventFormOpen}
                 onClose={toggleDrawer(false)}
                 onOpen={toggleDrawer(true)}
                 swipeAreaWidth={drawerBleeding}
@@ -153,7 +157,7 @@ export default function EventForm(props: Props) {
                     <form onSubmit={handleSubmit} className="w-4/5 mx-auto">
                         <h1 className="flex justify-center items-center text-violet-600 mt-5">
                             <HiCalendar className="mr-2" />
-                            NEW EVENT
+                            Add Activity
                         </h1>
                         <div className="mb-5">
                             <Label
@@ -166,7 +170,7 @@ export default function EventForm(props: Props) {
                                 className="w-full p-2 rounded bg-grey-primary text-grey-tertiary"
                                 id="title"
                                 name="title"
-                                placeholder="Enter event name"
+                                placeholder="Enter activity name"
                                 value={name}
                                 onChange={(e) => setName(e.target.value)}
                             />
@@ -176,26 +180,67 @@ export default function EventForm(props: Props) {
                                 htmlFor="description"
                                 className="mb-2 block text-base text-indigo-300"
                             >
-                                Description
+                                Venue Name
                             </Label>
-                            <textarea
+                            <input
+                                type="text"
                                 className="w-full p-2 rounded bg-grey-primary text-grey-tertiary border-none"
                                 id="description"
-                                name="description"
+                                name="venueLocation"
                                 placeholder="Write event description..."
-                                rows={4}
-                                value={description}
-                                onChange={(e) => setDescription(e.target.value)}
+                                value={venue_name}
+                                onChange={(e) => setVenue_name(e.target.value)}
                             />
                         </div>
+                        <div className="mb-5">
+                            <Label
+                                htmlFor="description"
+                                className="mb-2 block text-base text-indigo-300"
+                            >
+                                Venue Location
+                            </Label>
+                            <input
+                                type="text"
+                                className="w-full p-2 rounded bg-grey-primary text-grey-tertiary border-none"
+                                id="description"
+                                name="venueLocation"
+                                placeholder="Write event description..."
+                                value={venue_location}
+                                onChange={(e) =>
+                                    setVenue_location(e.target.value)
+                                }
+                            />
+                        </div>
+                        <div className="mb-5">
+                            <Label
+                                htmlFor="description"
+                                className="mb-2 block text-base text-indigo-300"
+                            >
+                                Venue Capacity
+                            </Label>
+                            <input
+                                type="number"
+                                className="w-full p-2 rounded bg-grey-primary text-grey-tertiary border-none"
+                                id="capacity"
+                                name="venueCapacity"
+                                placeholder="Enter venue capacity"
+                                value={venue_capacity}
+                                onChange={(e) =>
+                                    setVenue_capacity(Number(e.target.value))
+                                }
+                            />
+                        </div>
+
                         <div className="mb-6 flex flex-col">
                             <Label className="mb-2 block text-base text-indigo-300">
                                 Start date
                             </Label>
                             <DatePicker
                                 placeholderText="Select a date"
-                                selected={startDate}
-                                onChange={(date: Date) => setStartDate(date)}
+                                selected={start_datetime}
+                                onChange={(date: Date) =>
+                                    setStart_datetime(date)
+                                }
                                 dateFormat="yyyy-MM-dd"
                                 className="w-full p-2 rounded bg-grey-primary text-grey-tertiary border-none"
                             />
@@ -207,12 +252,15 @@ export default function EventForm(props: Props) {
                             <DatePicker
                                 placeholderText="Select a date"
                                 className="w-full p-2  rounded bg-grey-primary text-grey-tertiary border-none"
-                                selected={endDate}
-                                onChange={(date: Date) => setEndDate(date)}
+                                selected={end_datetime}
+                                onChange={(date: Date) => setEnd_datetime(date)}
                                 dateFormat="yyyy-MM-dd"
                             />
                         </div>
-                        <Button type="submit" className="w-full bg-violet-600 hover:bg-violet-700 hover:duration-100">
+                        <Button
+                            type="submit"
+                            className="w-full bg-violet-600 hover:bg-violet-700 hover:duration-100"
+                        >
                             <HiCalendar className="mr-2" />
                             Create event
                         </Button>
