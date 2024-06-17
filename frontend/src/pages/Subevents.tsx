@@ -70,7 +70,7 @@ const Subevents = () => {
         };
         fetchSubEvents();
     }, [subEventFormSubmitted, isSubEventDeleted]);
-    console.log(subevents);
+
 
     return (
         <div className="w-96 mx-auto">
