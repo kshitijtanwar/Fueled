@@ -26,11 +26,9 @@ const Subevents = () => {
     const history = useNavigate();
     const [loading, setLoading] = useState(true);
     const [subevents, setSubevents] = useState<SubEvent[]>();
-
+    const [isSubEventDeleted, setIsSubEventDeleted] = useState(false);
     const [isSubEventFormOpen, setSubEventFormIsOpen] = useState(false);
     const [subEventFormSubmitted, setSubEventFormSubmitted] = useState(false);
-    
-
 
     const handleLogout = () => {
         dispatch(logoutUser(navigate));
@@ -71,9 +69,9 @@ const Subevents = () => {
             }
         };
         fetchSubEvents();
-    }, [subEventFormSubmitted]);
+    }, [subEventFormSubmitted, isSubEventDeleted]);
     console.log(subevents);
-    
+
     return (
         <div className="w-96 mx-auto">
             <nav className="flex justify-between  pt-10 py-6 gap-5">
@@ -104,7 +102,11 @@ const Subevents = () => {
                         </span>
                     </Dropdown.Header>
                     {isHost && (
-                        <Dropdown.Item onClick={() => setSubEventFormIsOpen(true)}>Add your activities </Dropdown.Item>
+                        <Dropdown.Item
+                            onClick={() => setSubEventFormIsOpen(true)}
+                        >
+                            Add your activities{" "}
+                        </Dropdown.Item>
                     )}
                     <Dropdown.Item>Settings</Dropdown.Item>
                     <Dropdown.Divider />
@@ -119,7 +121,7 @@ const Subevents = () => {
                         No activities found for this event :(
                     </h1>
                 )}
-                {loading && (
+                {loading ? (
                     <Typography
                         component="div"
                         variant="h1"
@@ -129,10 +131,15 @@ const Subevents = () => {
                             <Skeleton key={index} variant="rounded" />
                         ))}
                     </Typography>
+                ) : (
+                    subevents?.map((subevent: SubEvent, index) => (
+                        <SubEventCard
+                            subevent={subevent}
+                            key={index}
+                            setIsSubEventDeleted={setIsSubEventDeleted}
+                        />
+                    ))
                 )}
-                {subevents?.map((subevent: SubEvent, index) => (
-                    <SubEventCard subevent={subevent} key={index} />
-                ))}
                 <SubEventForm
                     isSubEventFormOpen={isSubEventFormOpen}
                     setSubEventFormIsOpen={setSubEventFormIsOpen}

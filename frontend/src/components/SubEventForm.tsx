@@ -76,7 +76,7 @@ export default function SubEventForm(props: Props) {
         event.preventDefault();
 
         try {
-            toast.loading("Creating activity...", { id: "creatingEvent" });
+            toast.loading("Creating activity...", { id: "fetchingEvents" });
             const response = await axios.post(
                 `${userprofile}/user/subevents/`,
                 {
@@ -98,11 +98,11 @@ export default function SubEventForm(props: Props) {
                 props.setSubEventFormIsOpen(false);
             }
             toast.success("Activity created successfully", {
-                id: "creatingEvent",
+                id: "fetchingEvents",
             });
             return response.data;
         } catch (error: any) {
-            toast.error("Error creating event", { id: "creatingEvent" });
+            toast.error("Error creating event", { id: "fetchingEvents" });
             console.error("Error creating event", error);
         }
     };
