@@ -2,6 +2,7 @@ import { BsCalendarDate } from "react-icons/bs";
 import { SubEvent } from "../definitions";
 import { format } from "date-fns";
 import { CiSquareRemove } from "react-icons/ci";
+
 const SubEventCard = ({ subevent }: { subevent: SubEvent }) => {
     const startTime = format(subevent.start_datetime, "hh:mm a");
 

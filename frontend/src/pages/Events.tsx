@@ -85,6 +85,7 @@ const Events = () => {
                     }
                     arrowIcon={false}
                     inline
+                    className="z-50"
                 >
                     <Dropdown.Header>
                         <span className="block text-sm">
@@ -122,7 +123,7 @@ const Events = () => {
                 {loading && (
                     <Typography component="div" variant="h1">
                         {[...Array(5)].map((_, index) => (
-                            <Skeleton key={index} />
+                            <Skeleton key={index} className="z-0"/>
                         ))}
                     </Typography>
                 )}
