@@ -5,8 +5,6 @@ import { CiSquareRemove } from "react-icons/ci";
 const SubEventCard = ({ subevent }: { subevent: SubEvent }) => {
     const startTime = format(subevent.start_datetime, "hh:mm a");
 
-    console.log(subevent.start_datetime);
-
     return (
         <div className=" mx-auto w-full max-w-sm px-4 py-3 rounded-xl shadow-md bg-zinc-700 hover:cursor-pointer hover:bg-violet-900 duration-150">
             <div className="w-full flex flex-row justify-between items-center">

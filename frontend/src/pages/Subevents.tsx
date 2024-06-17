@@ -72,7 +72,8 @@ const Subevents = () => {
         };
         fetchSubEvents();
     }, [subEventFormSubmitted]);
-
+    console.log(subevents);
+    
     return (
         <div className="w-96 mx-auto">
             <nav className="flex justify-between  pt-10 py-6 gap-5">
