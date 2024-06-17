@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../store";
 import { registerUser } from "../store/userSlice";
-import { Label, TextInput } from "flowbite-react";
+import { Label } from "flowbite-react";
 import { IoMdArrowForward } from "react-icons/io";
 
 const Register: React.FC = () => {
@@ -44,7 +44,8 @@ const Register: React.FC = () => {
                             className="text-white"
                         />
                     </div>
-                    <TextInput
+                    <input
+                        className="w-full py-2 px-3 rounded-md"
                         type="text"
                         id="username"
                         value={username}
@@ -61,7 +62,8 @@ const Register: React.FC = () => {
                             className="text-white"
                         />
                     </div>
-                    <TextInput
+                    <input
+                        className="w-full py-2 px-3 rounded-md"
                         type="email"
                         id="email"
                         value={email}
@@ -78,7 +80,9 @@ const Register: React.FC = () => {
                             className="text-white"
                         />
                     </div>
-                    <TextInput
+                    <input
+                        className="w-full py-2 px-3 rounded-md"
+                        placeholder="********"
                         id="password"
                         type="password"
                         value={password}
@@ -94,7 +98,8 @@ const Register: React.FC = () => {
                             className="text-white"
                         />
                     </div>
-                    <TextInput
+                    <input
+                        className="w-full py-2 px-3 rounded-md"
                         id="contactInfo"
                         type="text"
                         value={

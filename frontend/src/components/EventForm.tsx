@@ -89,8 +89,6 @@ export default function EventForm(props: Props) {
             });
 
             if (response.ok) {
-                // Handle success
-                console.log("Event created successfully");
                 handleClose();
                 props.setEventFormSubmitted((prevState) => !prevState); // Toggle the state variable
             } else {
@@ -212,7 +210,10 @@ export default function EventForm(props: Props) {
                                 dateFormat="yyyy-MM-dd"
                             />
                         </div>
-                        <Button type="submit" className="w-full bg-violet-600 hover:bg-violet-700 hover:duration-100">
+                        <Button
+                            type="submit"
+                            className="w-full bg-violet-600 hover:bg-violet-700 hover:duration-100 border-none"
+                        >
                             <HiCalendar className="mr-2" />
                             Create event
                         </Button>
