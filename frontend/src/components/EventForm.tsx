@@ -89,8 +89,6 @@ export default function EventForm(props: Props) {
             });
 
             if (response.ok) {
-                // Handle success
-                console.log("Event created successfully");
                 handleClose();
                 props.setEventFormSubmitted((prevState) => !prevState); // Toggle the state variable
             } else {
