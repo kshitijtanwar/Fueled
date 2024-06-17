@@ -35,7 +35,7 @@ class ProfileSerializer(serializers.ModelSerializer):
 class SubEventSerializer(serializers.ModelSerializer):
     class Meta:
         model = SubEvent
-        fields = ['event', 'name', 'start_datetime', 'end_datetime', 'venue_name', 'venue_location', 'venue_capacity', 'capacity']
+        fields = ['id','event', 'name', 'start_datetime', 'end_datetime', 'venue_name', 'venue_location', 'venue_capacity', 'capacity']
 
 class EventSerializer(serializers.ModelSerializer):
 
