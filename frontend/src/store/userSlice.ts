@@ -4,13 +4,11 @@ import { UserState, SignUpType, LoginType, ErrorType } from "../definitions";
 import { userprofile } from "../constants/constants";
 import toast from "react-hot-toast";
 
-
 const initialState: UserState = {
     isAuthenticated: false,
     loading: false,
     error: null,
     user: null,
-    
 };
 
 export const registerUser = createAsyncThunk(
@@ -54,7 +52,7 @@ export const loginUser = createAsyncThunk(
             );
             toast.dismiss();
             navigate("/events"); // Navigate after successful login
-            
+
             return response.data;
         } catch (error: any) {
             if (axios.isAxiosError(error) && error.response) {
@@ -71,9 +69,11 @@ export const logoutUser = createAsyncThunk(
     "user/logout",
     async (navigate: any, { rejectWithValue }) => {
         try {
-            const response = await axios.post(`${userprofile}/user/logout/`, {}, { withCredentials: true });
+            const response = await axios.post(`${userprofile}/user/logout/`, {
+                withCredentials: true,
+            });
             toast.success("Logged out successfully"); // Show toast notification
-            navigate('/login'); 
+            navigate("/login");
             return response.data;
         } catch (error: any) {
             if (axios.isAxiosError(error) && error.response) {
@@ -82,7 +82,9 @@ export const logoutUser = createAsyncThunk(
                 return rejectWithValue(errorResponse);
             } else {
                 toast.error("An unexpected error occurred"); // Show error toast
-                return rejectWithValue({ error: "An unexpected error occurred" });
+                return rejectWithValue({
+                    error: "An unexpected error occurred",
+                });
             }
         }
     }
@@ -91,7 +93,7 @@ export const getUser = createAsyncThunk(
     "user/getUser",
     async (_, { rejectWithValue }) => {
         try {
-            const response = await axios.get(`${userprofile}/user/profile/`,{
+            const response = await axios.get(`${userprofile}/user/profile/`, {
                 withCredentials: true,
             });
             return response.data;
@@ -100,12 +102,13 @@ export const getUser = createAsyncThunk(
                 const errorResponse = error.response.data as ErrorType;
                 return rejectWithValue(errorResponse);
             } else {
-                return rejectWithValue({ error: "An unexpected error occurred" });
+                return rejectWithValue({
+                    error: "An unexpected error occurred",
+                });
             }
         }
     }
 );
-
 
 const userSlice = createSlice({
     name: "user",
@@ -160,11 +163,7 @@ const userSlice = createSlice({
                 state.loading = false;
                 state.error = action.payload as string;
             });
-            ;
     },
 });
 
-
 export default userSlice.reducer;
-
-
