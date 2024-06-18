@@ -11,6 +11,7 @@ import { Button, Label } from "flowbite-react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { HiCalendar } from "react-icons/hi";
+import toast from "react-hot-toast";
 
 const drawerBleeding = 0;
 
@@ -79,6 +80,7 @@ export default function EventForm(props: Props) {
         };
 
         try {
+            toast.loading("Creating event...", { id: "fetchingEvents" });
             const response = await fetch(`${userprofile}/user/event/`, {
                 method: "POST",
                 headers: {
@@ -89,10 +91,14 @@ export default function EventForm(props: Props) {
             });
 
             if (response.ok) {
+                toast.success("Event created successfully", {
+                    id: "fetchingEvents",
+                });
                 handleClose();
                 props.setEventFormSubmitted((prevState) => !prevState); // Toggle the state variable
             } else {
                 // Handle error
+                toast.error("Error creating event", { id: "fetchingEvents" });
                 const errorData = await response.json();
                 console.error("Error creating event:", errorData);
             }

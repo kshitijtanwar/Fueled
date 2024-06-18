@@ -17,6 +17,7 @@ import Skeleton from "@mui/material/Skeleton";
 import Typography from "@mui/material/Typography";
 import EventForm from "../components/EventForm";
 
+
 const Events = () => {
     const history = useNavigate();
     const navigate = useNavigate();
@@ -30,6 +31,7 @@ const Events = () => {
     const { setIsHost } = useContext(UtilityContext);
     const { setUserInfo } = useContext(UtilityContext);
     const { setEventName } = useContext(UtilityContext);
+    const [isEventDeleted, setIsEventDeleted] = useState(false);
 
     const handleLogout = () => {
         dispatch(logoutUser(navigate));
@@ -68,10 +70,10 @@ const Events = () => {
             }
         };
         fetchEvents();
-    }, [eventFormSubmitted]);
+    }, [eventFormSubmitted, isEventDeleted]);
 
     return (
-        <>
+        <div className="">
             <nav className="flex justify-between w-96 mx-auto pt-10 py-6">
                 <div className="flex items-center gap-2">
                     <IoIosArrowRoundBack
@@ -106,7 +108,7 @@ const Events = () => {
                     </Dropdown.Item>
                 </Dropdown>
             </nav>
-            <div className="flex w-96 mx-auto text-sm">
+            <div className="flex text-sm w-96 mx-auto">
                 <button
                     onClick={() => setActiveEventBtn("hosted")}
                     className={` hover:bg-violet-600 text-white px-3 py-2 rounded-md mr-2 ${activeEventBtn === "hosted" ? "bg-violet-600" : "bg-violet-400"}`}
@@ -138,6 +140,7 @@ const Events = () => {
                         <EventCard
                             key={index}
                             event={event}
+                            setIsEventDeleted={setIsEventDeleted}
                             onClick={() => {
                                 setIsHost(event.is_host);
                                 setEventName(event.name);
@@ -150,7 +153,7 @@ const Events = () => {
                     setEventFormSubmitted={setEventFormSubmitted}
                 />
             </main>
-        </>
+        </div>
     );
 };
 export default Events;
