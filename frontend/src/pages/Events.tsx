@@ -60,6 +60,7 @@ const Events = () => {
                     id: "fetchingEvents",
                 });
             } catch (error) {
+                setLoading(false);
                 toast.error("Error fetching events", {
                     id: "fetchingEvents",
                 });
