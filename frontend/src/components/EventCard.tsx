@@ -25,6 +25,8 @@ import {
     AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 
+// import WebSocketTestButton from "./WebSocketTestButton";
+
 type EventCardProps = {
     event: Event;
     onClick: () => void;
@@ -117,6 +119,7 @@ const EventCard = ({ event, onClick, setIsEventDeleted }: EventCardProps) => {
                     </AlertDialogFooter>
                 </AlertDialogContent>
             </AlertDialog>
+            {/* <WebSocketTestButton /> */}
         </button>
     );
 };
