@@ -69,9 +69,13 @@ export const logoutUser = createAsyncThunk(
     "user/logout",
     async (navigate: any, { rejectWithValue }) => {
         try {
-            const response = await axios.post(`${userprofile}/user/logout/`, {
-                withCredentials: true,
-            });
+            const response = await axios.post(
+                `${userprofile}/user/logout/`,
+                {},
+                {
+                    withCredentials: true,
+                }
+            );
             toast.success("Logged out successfully"); // Show toast notification
             navigate("/login");
             return response.data;
