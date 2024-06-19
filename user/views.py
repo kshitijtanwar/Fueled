@@ -141,6 +141,9 @@ class JoinEventView(APIView):
         event = get_object_or_404(Event, join_code=join_code)
         user = request.user
 
+        if event.organizer.user == user:
+            return Response({"message": "You cannot join your own event."}, status=status.HTTP_400_BAD_REQUEST)
+
         if Event_Participant.objects.filter(event=event, user=user).exists():
             return Response({"message": "You have already joined this event."}, status=status.HTTP_400_BAD_REQUEST)
 

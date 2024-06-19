@@ -7,7 +7,7 @@ from user.models import Profile
 class ChatConsumer(AsyncWebsocketConsumer):
 
     async def connect(self):
-        self.sender_profile_id = None
+        self.sender_profile_id = self.scope['user'].id
         self.room_name = self.scope['url_route']['kwargs']['room_name']
         self.room_group_name = 'chat_%s' % self.room_name
 
@@ -28,13 +28,12 @@ class ChatConsumer(AsyncWebsocketConsumer):
 
     # Receive message from WebSocket
     async def receive(self, text_data):
-        text_data_json = json.loads(text_data)
-        message = text_data_json['message']
-        self.sender_profile_id = text_data_json['sender_profile_id']  # Update sender_profile_id
+        message = text_data
+        self.sender_profile_id = self.scope['user'].id # Update sender_profile_id
 
         # Save the message to the database
-        sender_profile = await database_sync_to_async(Profile.objects.get)(id=self.sender_profile_id)
-        sender_username = await database_sync_to_async(lambda: sender_profile.user.username)()
+        if self.sender_profile_id: sender_profile = await database_sync_to_async(Profile.objects.get)(id=self.sender_profile_id)
+        if self.sender_profile_id: sender_username = await database_sync_to_async(lambda: sender_profile.user.username)()
         channel = await database_sync_to_async(Channel.objects.get)(ChannelName=self.room_name)
         channel_message = await database_sync_to_async(Channel_Message.objects.create)(
             Channel=channel,
@@ -56,12 +55,11 @@ class ChatConsumer(AsyncWebsocketConsumer):
     # Receive message from room group
     async def chat_message(self, event):
         message = event['message']
-        sender_profile_id = event['sender_profile_id']
         sender_username = event['sender_username']
 
         # Check if the sender is the same as the receiver
-        if sender_profile_id != self.sender_profile_id:
-            await self.send(text_data=json.dumps({
-                'message': message,
-                'sender_username': sender_username
-            }))
+        #if sender_profile_id != self.sender_profile_id:
+        await self.send(text_data=json.dumps({
+            'message': message,
+            'sender_username': sender_username
+        }))
