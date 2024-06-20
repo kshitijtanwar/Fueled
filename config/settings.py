@@ -30,7 +30,7 @@ SECRET_KEY = 'qj61l9$qaaenn3ozv9$8vmg#au!-5*ir(vv-w(rk(+ehmf+vf8'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost', ]
+ALLOWED_HOSTS = ["*"]
 
 CSRF_COOKIE_NAME = 'csrftoken'
 
