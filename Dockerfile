@@ -13,10 +13,6 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copy the project files to the working directory
 COPY . .
 
-# Run database migrations
-RUN python manage.py makemigrations
-RUN python manage.py migrate
-
 # Base image for the frontend (Vite)
 FROM node:16-alpine as frontend
 
