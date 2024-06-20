@@ -34,7 +34,7 @@ ALLOWED_HOSTS = ["*"]
 
 CSRF_COOKIE_NAME = 'csrftoken'
 
-CSRF_TRUSTED_ORIGINS = ['http://127.0.0.1:5173', 'http://127.0.0.1:8000', "https://eventzone.onrender.com"]
+CSRF_TRUSTED_ORIGINS = ['http://127.0.0.1:5173', 'http://127.0.0.1:8000']
 
 CORS_ALLOW_ALL_ORIGINS = True
 
