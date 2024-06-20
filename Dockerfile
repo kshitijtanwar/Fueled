@@ -1,5 +1,5 @@
 # Base image for the backend (Django)
-FROM python:3.11.8-slim-buster as backend
+FROM python:3.11-slim-buster as backend
 
 # Set the working directory in the container
 WORKDIR /
@@ -18,7 +18,7 @@ RUN python manage.py makemigrations
 RUN python manage.py migrate
 
 # Base image for the frontend (Vite)
-FROM node:16.0-alpine as frontend
+FROM node:16-alpine as frontend
 
 # Set the working directory in the container
 WORKDIR /frontend
