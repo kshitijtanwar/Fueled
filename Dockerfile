@@ -2,7 +2,7 @@
 FROM python:3.11-slim-buster as backend
 
 # Set the working directory in the container
-WORKDIR /
+WORKDIR /app
 
 # Copy the requirements file to the working directory
 COPY requirements.txt .
@@ -35,10 +35,13 @@ RUN npm run build
 FROM backend as final
 
 # Copy the built frontend files from the frontend stage to the final stage
-COPY --from=frontend /frontend/dist /frontend/dist
+COPY --from=frontend /frontend/dist /app/frontend/dist
 
-# Change the working directory back to the backend directory
-WORKDIR /
+# Set the working directory back to the backend directory
+WORKDIR /app
+
+# Ensure static files are collected
+RUN python manage.py collectstatic --noinput
 
 # Expose the port that Daphne runs on
 EXPOSE 8000
