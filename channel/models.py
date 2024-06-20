@@ -1,10 +1,18 @@
 from django.db import models
-from user.models import Profile, SubEvent
+from user.models import Profile, Event
 
 class Channel(models.Model):
     ChannelName = models.CharField(max_length=255)
     ChannelType = models.CharField(max_length=20)
-    SubEvent = models.ForeignKey(SubEvent, on_delete=models.CASCADE)
+    Event = models.ForeignKey(Event, on_delete=models.CASCADE, related_name='channel')
+    Participants = models.ManyToManyField(Profile, through='Channel_Participant', related_name='channels')
+    location = models.CharField(max_length=255, null=True, blank=True)
+    capacity = models.IntegerField(null=True, blank=True)
+    start_time = models.DateTimeField(null=True, blank=True)
+    end_time = models.DateTimeField(null=True, blank=True)
+
+    def get_participants(self):
+        return self.participants.all()
 
     def get_messages(self):
         return self.channel_message_set.order_by('Timestamp')

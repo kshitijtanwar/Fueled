@@ -23,8 +23,8 @@ class Event(models.Model):
     organizer = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name='organized_events')
     join_code = models.CharField(max_length=20, unique=True, null=True, blank=True)
 
-    def get_subevents(self):
-        return self.subevents.all()
+    def get_channel(self):
+        return self.channel.all()
 
     def save(self, *args, **kwargs):
         if not self.join_code:
@@ -35,19 +35,6 @@ class Event(models.Model):
         characters = string.ascii_letters + string.digits
         join_code = ''.join(secrets.choice(characters) for _ in range(20))
         return join_code
-
-class SubEvent(models.Model):
-    event = models.ForeignKey(Event, on_delete=models.CASCADE, related_name='subevents')
-    name = models.CharField(max_length=255)
-    start_datetime = models.DateTimeField()
-    end_datetime = models.DateTimeField()
-    venue_name = models.CharField(max_length=255)
-    venue_location = models.CharField(max_length=255)
-    venue_capacity = models.IntegerField()
-    capacity = models.IntegerField()
-
-    def get_channels(self):
-        return self.channel_set.all()
     
 class Event_Participant(models.Model):
     event = models.ForeignKey(Event, on_delete=models.CASCADE, related_name='participants')
@@ -57,5 +44,5 @@ class Event_Participant(models.Model):
 
 class RSVP(models.Model):
     guest = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name='rsvps')
-    event = models.ForeignKey(SubEvent, on_delete=models.CASCADE)
+    event = models.ForeignKey(Event, on_delete=models.CASCADE)
     status = models.CharField(max_length=20)

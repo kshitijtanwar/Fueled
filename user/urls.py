@@ -1,12 +1,11 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
-from .views import ProfileViewSet, EventViewSet, RSVPViewSet, SubEventViewSet, JoinEventView
+from .views import ProfileViewSet, EventViewSet, RSVPViewSet, JoinEventView
 
 router = DefaultRouter()
 router.register(r'register', ProfileViewSet, basename='profile')
 router.register(r'event', EventViewSet, basename='event')
 router.register(r'rsvp', RSVPViewSet, basename='rsvp')
-router.register(r'subevents', SubEventViewSet, basename='subchannel')
 
 urlpatterns = [
     path('', include(router.urls)),

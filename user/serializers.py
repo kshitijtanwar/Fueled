@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User
-from .models import Profile, Event, SubEvent, RSVP
+from .models import Profile, Event, RSVP
 
 class UserSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True)
@@ -30,12 +30,6 @@ class ProfileSerializer(serializers.ModelSerializer):
         user = UserSerializer().create(user_data)
         profile = Profile.objects.create(user=user, **validated_data)
         return profile
-    
-
-class SubEventSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = SubEvent
-        fields = ['id','event', 'name', 'start_datetime', 'end_datetime', 'venue_name', 'venue_location', 'venue_capacity', 'capacity']
 
 class EventSerializer(serializers.ModelSerializer):
 
