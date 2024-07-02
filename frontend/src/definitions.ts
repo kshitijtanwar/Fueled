@@ -35,12 +35,11 @@ export interface Event {
 
 export interface SubEvent {
     id: number;
-    name: string;
+    ChannelName: string;
+    ChannelType: string;
     description: string;
-    start_datetime: string;
-    end_datetime: string;
-    venue_name: string;
-    venue_location: string;
-    venue_capacity: number;
+    start_time: string;
+    end_time: string;
+    location: string;
     capacity: number;
 }

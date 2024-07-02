@@ -144,6 +144,7 @@ const Events = () => {
                             onClick={() => {
                                 setIsHost(event.is_host);
                                 setEventName(event.name);
+                                navigate(`/events/subevents/${event.id}`)
                             }}
                         />
                     ))}

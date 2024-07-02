@@ -48,13 +48,11 @@ const Puller = styled(Box)(({ theme }) => ({
 
 export default function SubEventForm(props: Props) {
     const params = useParams();
-    const [name, setName] = useState("");
-    const [start_datetime, setStart_datetime] = useState<Date | null>(null);
-    const [end_datetime, setEnd_datetime] = useState<Date | null>(null);
-    const [venue_name, setVenue_name] = useState<string>("");
-    const [venue_location, setVenue_location] = useState<string>("");
-    const [venue_capacity, setVenue_capacity] = useState<number>(0);
-    const capacity = 0;
+    const [ChannelName, setChannelName] = useState("");
+    const [start_time, setStart_time] = useState<Date | null>(null);
+    const [end_time, setEnd_time] = useState<Date | null>(null);
+    const [location, setlocation] = useState<string>("");
+    const [capacity, setCapacity] = useState<number>(0);
     const { window } = props;
 
     const styles = {
@@ -78,15 +76,13 @@ export default function SubEventForm(props: Props) {
         try {
             toast.loading("Creating activity...", { id: "fetchingEvents" });
             const response = await axios.post(
-                `${userprofile}/user/subevents/`,
+                `${userprofile}/channel/new/`,
                 {
                     event: params.eventID,
-                    name,
-                    start_datetime,
-                    end_datetime,
-                    venue_name,
-                    venue_location,
-                    venue_capacity,
+                    ChannelName,
+                    start_time,
+                    end_time,
+                    location,
                     capacity,
                 },
                 {
@@ -171,8 +167,8 @@ export default function SubEventForm(props: Props) {
                                 id="title"
                                 name="title"
                                 placeholder="Enter activity name"
-                                value={name}
-                                onChange={(e) => setName(e.target.value)}
+                                value={ChannelName}
+                                onChange={(e) => setChannelName(e.target.value)}
                             />
                         </div>
                         <div className="mb-5">
@@ -182,7 +178,7 @@ export default function SubEventForm(props: Props) {
                             >
                                 Venue Name
                             </Label>
-                            <input
+                            {/* <input
                                 type="text"
                                 className="w-full p-2 rounded bg-grey-primary text-grey-tertiary border-none"
                                 id="description"
@@ -190,7 +186,7 @@ export default function SubEventForm(props: Props) {
                                 placeholder="Write event description..."
                                 value={venue_name}
                                 onChange={(e) => setVenue_name(e.target.value)}
-                            />
+                            /> */}
                         </div>
                         <div className="mb-5">
                             <Label
@@ -205,9 +201,9 @@ export default function SubEventForm(props: Props) {
                                 id="description"
                                 name="venueLocation"
                                 placeholder="Write event description..."
-                                value={venue_location}
+                                value={location}
                                 onChange={(e) =>
-                                    setVenue_location(e.target.value)
+                                    setlocation(e.target.value)
                                 }
                             />
                         </div>
@@ -224,9 +220,9 @@ export default function SubEventForm(props: Props) {
                                 id="capacity"
                                 name="venueCapacity"
                                 placeholder="Enter venue capacity"
-                                value={venue_capacity}
+                                value={capacity}
                                 onChange={(e) =>
-                                    setVenue_capacity(Number(e.target.value))
+                                    setCapacity(Number(e.target.value))
                                 }
                             />
                         </div>
@@ -237,9 +233,9 @@ export default function SubEventForm(props: Props) {
                             </Label>
                             <DatePicker
                                 placeholderText="Select a date"
-                                selected={start_datetime}
+                                selected={start_time}
                                 onChange={(date: Date) =>
-                                    setStart_datetime(date)
+                                    setStart_time(date)
                                 }
                                 dateFormat="yyyy-MM-dd"
                                 className="w-full p-2 rounded bg-grey-primary text-grey-tertiary border-none"
@@ -252,8 +248,8 @@ export default function SubEventForm(props: Props) {
                             <DatePicker
                                 placeholderText="Select a date"
                                 className="w-full p-2  rounded bg-grey-primary text-grey-tertiary border-none"
-                                selected={end_datetime}
-                                onChange={(date: Date) => setEnd_datetime(date)}
+                                selected={end_time}
+                                onChange={(date: Date) => setEnd_time(date)}
                                 dateFormat="yyyy-MM-dd"
                             />
                         </div>
