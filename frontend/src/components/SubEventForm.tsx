@@ -75,10 +75,12 @@ export default function SubEventForm(props: Props) {
 
         try {
             toast.loading("Creating activity...", { id: "fetchingEvents" });
+            console.log(start_time, end_time, location, capacity, ChannelName);
             const response = await axios.post(
-                `${userprofile}/channel/new/`,
+                `${userprofile}/channel/new/?eventID=${params.eventID}`,
                 {
-                    event: params.eventID,
+                    Event: params.eventID,
+                    ChannelType: "Activity",
                     ChannelName,
                     start_time,
                     end_time,
@@ -153,14 +155,14 @@ export default function SubEventForm(props: Props) {
                     <form onSubmit={handleSubmit} className="w-4/5 mx-auto">
                         <h1 className="flex justify-center items-center text-violet-600 mt-5">
                             <HiCalendar className="mr-2" />
-                            Add Activity
+                            Add Channels
                         </h1>
                         <div className="mb-5">
                             <Label
                                 htmlFor="title"
                                 className="mb-2 block text-base text-indigo-300"
                             >
-                                Title
+                                Channel Name
                             </Label>
                             <input
                                 className="w-full p-2 rounded bg-grey-primary text-grey-tertiary"
@@ -170,23 +172,6 @@ export default function SubEventForm(props: Props) {
                                 value={ChannelName}
                                 onChange={(e) => setChannelName(e.target.value)}
                             />
-                        </div>
-                        <div className="mb-5">
-                            <Label
-                                htmlFor="description"
-                                className="mb-2 block text-base text-indigo-300"
-                            >
-                                Venue Name
-                            </Label>
-                            {/* <input
-                                type="text"
-                                className="w-full p-2 rounded bg-grey-primary text-grey-tertiary border-none"
-                                id="description"
-                                name="venueLocation"
-                                placeholder="Write event description..."
-                                value={venue_name}
-                                onChange={(e) => setVenue_name(e.target.value)}
-                            /> */}
                         </div>
                         <div className="mb-5">
                             <Label
@@ -212,7 +197,7 @@ export default function SubEventForm(props: Props) {
                                 htmlFor="description"
                                 className="mb-2 block text-base text-indigo-300"
                             >
-                                Venue Capacity
+                                Capacity
                             </Label>
                             <input
                                 type="number"
@@ -258,7 +243,7 @@ export default function SubEventForm(props: Props) {
                             className="border-none w-full bg-violet-600 hover:bg-violet-700 hover:duration-100"
                         >
                             <HiCalendar className="mr-2" />
-                            Create event
+                            Create Channel
                         </Button>
                     </form>
                 </StyledBox>
