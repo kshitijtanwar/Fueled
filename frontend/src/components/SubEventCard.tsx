@@ -32,8 +32,8 @@ const SubEventCard = ({
     subevent: SubEvent;
     setIsSubEventDeleted: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
-    const startTime = format(subevent.start_datetime, "hh:mm a");
-
+    const startTime = subevent.start_time ? format(subevent.start_time , "hh:mm a") : "N/A";
+    
     const handleDeleteSubEvent = async () => {
         try {
             setIsSubEventDeleted(false);
@@ -109,7 +109,7 @@ const SubEventCard = ({
 
                 <div className="flex items-center justify-between">
                     <h1 className="mt-2 text-lg font-semibold  text-indigo-300">
-                        {subevent.name}
+                        {subevent.ChannelName}
                     </h1>
                     <span className="px-3 py-1 text-xs  uppercase rounded-full bg-blue-300 text-blue-900">
                         Venue Capacity: {subevent.capacity}
@@ -122,15 +122,15 @@ const SubEventCard = ({
                         <span className="text-sm text-gray-200 font-medium">
                             Activity starting date:
                         </span>{" "}
-                        {format(subevent.start_datetime, "MMMM dd, yyyy")}
+                        {format(subevent.start_time, "MMMM dd, yyyy")}
                     </p>
                     <p className="mt-2 text-sm text-gray-200 dark:text-gray-300 flex items-center gap-1">
                         <BsCalendarDate className="text-xl" />
                         <span className="text-sm text-gray-200 font-medium">
                             Activity ending date:
                         </span>{" "}
-                        {format(subevent.end_datetime, "MMMM dd, yyyy")}
-                    </p>
+                        {format(subevent.end_time, "MMMM dd, yyyy")}
+                    </p> 
                 </div>
 
                 <div className="flex  mt-2 text-gray-200 text-sm">
@@ -138,7 +138,7 @@ const SubEventCard = ({
                         Venue location:
                     </span>
                     <span className="font-light">
-                        {subevent.venue_name}, {subevent.venue_location}
+                        {subevent.location}
                     </span>
                 </div>
             </AlertDialog>

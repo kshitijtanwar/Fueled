@@ -30,17 +30,16 @@ SECRET_KEY = 'qj61l9$qaaenn3ozv9$8vmg#au!-5*ir(vv-w(rk(+ehmf+vf8'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ["*"]
 
 CSRF_COOKIE_NAME = 'csrftoken'
 
-CSRF_TRUSTED_ORIGINS = ['http://127.0.0.1:5173',]
+CSRF_TRUSTED_ORIGINS = ['http://127.0.0.1:5173', 'http://127.0.0.1:8000']
 
 CORS_ALLOW_ALL_ORIGINS = True
 
 CORS_ALLOW_CREDENTIALS = True
 
-SESSION_COOKIE_HTTPONLY = False
 
 script_dir = os.path.dirname(os.path.abspath(__file__))
 
@@ -169,7 +168,8 @@ REST_FRAMEWORK = {
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
 
-STATIC_URL = 'assets/'
+STATIC_URL = '/assets/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'frontend/dist/assets')
 ]

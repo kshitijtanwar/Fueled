@@ -42,12 +42,13 @@ const Subevents = () => {
                     id: "fetchingEvents",
                 });
                 const response = await axios.get(
-                    `${userprofile}/user/subevents/?eventID=${params.eventID}`,
+                    `${userprofile}/channel/new/?eventID=${params.eventID}`,
                     {
                         withCredentials: true,
                     }
                 );
                 setSubevents(response.data);
+                console.log(response.data);
                 setLoading(false);
                 if (response.data.length === 0) {
                     toast.error("No activities events found", {

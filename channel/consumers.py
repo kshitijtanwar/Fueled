@@ -7,17 +7,22 @@ from user.models import Profile
 class ChatConsumer(AsyncWebsocketConsumer):
 
     async def connect(self):
-        self.sender_profile_id = self.scope['user'].id
-        self.room_name = self.scope['url_route']['kwargs']['room_name']
-        self.room_group_name = 'chat_%s' % self.room_name
+        # Check if the user is authenticated
+        if self.scope['user'].is_authenticated:
+            self.sender_profile_id = self.scope['user'].id
+            self.room_name = self.scope['url_route']['kwargs']['room_name']
+            self.room_group_name = 'chat_%s' % self.room_name
 
-        # Join room group
-        await self.channel_layer.group_add(
-            self.room_group_name,
-            self.channel_name
-        )
+            # Join room group
+            await self.channel_layer.group_add(
+                self.room_group_name,
+                self.channel_name
+            )
 
-        await self.accept()
+            await self.accept()
+        else:
+            # Close the connection if the user is not authenticated
+            await self.close()
 
     async def disconnect(self, close_code):
         # Leave room group

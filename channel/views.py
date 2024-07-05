@@ -5,12 +5,27 @@ from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from user.models import Event
 
 @method_decorator(csrf_exempt, name='dispatch')
 class ChannelViewSet(viewsets.ModelViewSet):
     def initial(self, request, *args, **kwargs):
         request._dont_enforce_csrf_checks = True
         super(ChannelViewSet, self).initial(request, *args, **kwargs)
+
+    def list(self, request, format=None):
+        event_id = request.query_params.get('eventID')
+        if not event_id:
+            return Response({"error": "event_id is required"}, status=400)
+
+        try:
+            event = Event.objects.get(id=event_id)
+        except Event.DoesNotExist:
+            return Response({"error": "Event does not exist"}, status=404)
+
+        channels = event.get_channel()
+        serializer = ChannelSerializer(channels, many=True)
+        return Response(serializer.data)
 
     queryset = Channel.objects.all()
     serializer_class = ChannelSerializer
